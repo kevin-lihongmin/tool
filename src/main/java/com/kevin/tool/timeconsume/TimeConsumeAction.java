@@ -9,7 +9,14 @@ import org.aspectj.lang.reflect.MethodSignature;
 import java.lang.reflect.Method;
 import java.util.Stack;
 
+
 /**
+ *  统计方法执行时间，可以支持注解的方法嵌套
+ * @author lihongmin
+ * @date 2019/10/25 15:04
+ * @see TimeConsume
+ * @see EnableTimeConsume
+ * @see org.springframework.context.annotation.EnableAspectJAutoProxy
  */
 @Aspect
 @Slf4j
@@ -77,7 +84,7 @@ public class TimeConsumeAction {
             stopWatch.stop();
             LOG_THREAD_LOCAL.get().append(stopWatch.shortSummary()).append(SEPARATOR);
 
-            // 最外层（可能多个）出时，调用remove防止内存溢出
+            // 最外层（可能多个）出时，调用remove方法进行gc防止内存溢出
             if (MONITOR_THREAD_LOCAL.get().empty()) {
                 log.info(LOG_THREAD_LOCAL.get().toString());
                 MONITOR_THREAD_LOCAL.remove();

@@ -4,7 +4,7 @@ import org.springframework.util.StopWatch;
 
 
 /**
- *  计时器
+ *  方法调用耗时的计时器
  * @author lihongmin
  * @date 2019/10/25 14:14
  */
