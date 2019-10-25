@@ -5,11 +5,9 @@ import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.*;
 import org.aspectj.lang.reflect.MethodSignature;
-import org.springframework.util.StopWatch;
 
 import java.lang.reflect.Method;
 import java.util.Stack;
-import java.util.concurrent.atomic.AtomicLong;
 
 /**
  */
@@ -17,19 +15,35 @@ import java.util.concurrent.atomic.AtomicLong;
 @Slf4j
 public class TimeConsumeAction {
 
-    private static final ThreadLocal<Stack<StopWatch>> Thread_Local = new ThreadLocal(){
+    /**
+     *  日志分隔符
+     */
+    private static final String SEPARATOR = " ;  ";
+
+    /**
+     *  方法调用计时器
+     */
+    private static final ThreadLocal<Stack<PosStopWatch>> MONITOR_THREAD_LOCAL = new ThreadLocal(){
         @Override
-        public Stack<StopWatch> initialValue() {
+        public Stack<PosStopWatch> initialValue() {
             return new Stack<>();
         }
     };
 
-    private static final AtomicLong start = new AtomicLong();
+    /**
+     *  结果日志记录器
+     */
+    private static final ThreadLocal<StringBuilder> LOG_THREAD_LOCAL = new ThreadLocal(){
+        @Override
+        public StringBuilder initialValue() {
+            return new StringBuilder();
+        }
+    };
 
     /**
      * 只切面 TimeConsume 注解标注的方法
      */
-    @Pointcut("@annotation(com.kevin.jpa.timeconsume.TimeConsume)")
+    @Pointcut("@annotation(com.kevin.tool.timeconsume.TimeConsume)")
     private void timeConsumeAspect() {
     }
 
@@ -43,9 +57,9 @@ public class TimeConsumeAction {
     public Object around(ProceedingJoinPoint pjp) throws Throwable {
         TimeConsume timeConsume = getTimeConsume(pjp);
         if (timeConsume.print()) {
-            StopWatch stopWatch = new StopWatch(timeConsume.taskName());
+            PosStopWatch stopWatch = new PosStopWatch(timeConsume.taskName());
             stopWatch.start(timeConsume.taskName());
-            Thread_Local.get().push(stopWatch);
+            MONITOR_THREAD_LOCAL.get().push(stopWatch);
         }
         return pjp.proceed();
     }
@@ -59,10 +73,16 @@ public class TimeConsumeAction {
     public void after(JoinPoint pjp) {
         TimeConsume timeConsume = getTimeConsume(pjp);
         if (timeConsume.print()) {
-            StopWatch stopWatch = Thread_Local.get().pop();
+            PosStopWatch stopWatch = MONITOR_THREAD_LOCAL.get().pop();
             stopWatch.stop();
-            log.info(stopWatch.shortSummary());
-            Thread_Local.remove();
+            LOG_THREAD_LOCAL.get().append(stopWatch.shortSummary()).append(SEPARATOR);
+
+            // 最外层（可能多个）出时，调用remove防止内存溢出
+            if (MONITOR_THREAD_LOCAL.get().empty()) {
+                log.info(LOG_THREAD_LOCAL.get().toString());
+                MONITOR_THREAD_LOCAL.remove();
+                LOG_THREAD_LOCAL.remove();
+            }
         }
     }
 

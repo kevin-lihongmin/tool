@@ -7,6 +7,12 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.web.bind.annotation.RestController;
 
+
+/**
+ *	启动类
+ * @author lihongmin
+ * @date 2019/10/25 13:45
+ */
 @SpringBootApplication
 @RestController
 @EnableTimeConsume
