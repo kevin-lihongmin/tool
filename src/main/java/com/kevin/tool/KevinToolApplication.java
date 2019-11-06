@@ -3,8 +3,10 @@ package com.kevin.tool;
 import com.kevin.tool.timeconsume.EnableTimeConsume;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.bind.annotation.RestController;
 
 
@@ -16,8 +18,8 @@ import org.springframework.web.bind.annotation.RestController;
 @SpringBootApplication
 @RestController
 @EnableTimeConsume
-@EnableAspectJAutoProxy
 @EnableAsync
+@ComponentScan("com.kevin.tool")
 public class KevinToolApplication {
 
 	public static void main(String[] args) {
