@@ -4,12 +4,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.Assert;
 import org.springframework.util.StopWatch;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
@@ -27,7 +28,15 @@ import static com.kevin.tool.async.SimpleThreadPool.ThreadPoolEnum;
 @Repository
 public class AsyncRepository implements BeanFactoryAware {
 
-    private static ThreadLocal<StopWatch> threadLocal = ThreadLocal.withInitial(() -> new StopWatch());
+    /**
+     *  存放当前线程需要执行的任务
+     */
+    private static ThreadLocal<Queue<Asyncable>> QUEUE = ThreadLocal.withInitial(() -> new ConcurrentLinkedDeque<Asyncable>());
+
+    /**
+     *  执行策略
+     */
+    private static ThreadLocal<ThreadPoolEnum> POOL_ENUM = new ThreadLocal<>();
 
     /**
      *  策略后缀名称
@@ -52,6 +61,111 @@ public class AsyncRepository implements BeanFactoryAware {
     }
 
     /**
+     *  添加异步任务
+     * @param asyncable 异步任务
+     * @return 当前对象
+     */
+    public AsyncRepository addAsyncable(Asyncable asyncable) {
+        QUEUE.get().add(asyncable);
+        return this;
+    }
+
+    /**
+     *  执行策略
+     * @param poolEnum 任务策略
+     * @return 当前对象
+     */
+    public AsyncRepository strategy(ThreadPoolEnum poolEnum) {
+        POOL_ENUM.set(poolEnum);
+        return this;
+    }
+
+    /**
+     *  执行所有队列任务
+     *  执行前先通过{@link #addAsyncable(Asyncable)} 添加任务
+     *
+     * @param poolEnum 执行策略
+     * @return 执行结果
+     */
+    public List invokeAll(ThreadPoolEnum poolEnum) {
+        Queue<Asyncable> queue = QUEUE.get();
+        queue.element();
+        AsyncConfiguration strategy = getStrategy(poolEnum);
+
+        List<Future> listFuture = new ArrayList<>(queue.size());
+        while (queue.peek() != null) {
+            listFuture.add(strategy.run(queue.poll()));
+        }
+
+        List<Object> result = new ArrayList<>(queue.size());
+        getAll(listFuture, result);
+        removeAll();
+        return result;
+    }
+
+    public List invokeAll() {
+        ThreadPoolEnum threadPoolEnum = POOL_ENUM.get();
+        if (threadPoolEnum == null) {
+            throw new RuntimeException("执行策略为空！");
+        }
+        Queue<Asyncable> queue = QUEUE.get();
+        queue.element();
+        List<Object> result = new ArrayList<>(queue.size());
+
+        AsyncConfiguration strategy = getStrategy(threadPoolEnum);
+        List<Future> listFuture = new ArrayList<>(queue.size());
+        while (queue.peek() != null) {
+            listFuture.add(strategy.run(queue.poll()));
+        }
+
+        getAll(listFuture, result);
+        removeAll();
+        return result;
+    }
+
+    /**
+     *  对所有进行{@link ThreadLocal#remove()}操作，防止内存泄漏和脏数据
+     */
+    private void removeAll() {
+        QUEUE.remove();
+        POOL_ENUM.remove();
+    }
+    /**
+     *  阻塞获取所有的结果
+     *
+     * @param listFuture Future集合
+     * @param result 封装结果集合
+     */
+    private void getAll(List<Future> listFuture, List<Object> result) {
+        try {
+            for (Future<Object> future : listFuture) {
+                result.add(future.get());
+            }
+        } catch (InterruptedException e) {
+            log.error("InterruptedException :" + e);
+        } catch (ExecutionException e) {
+            log.error("ExecutionException :" + e);
+        }
+    }
+
+    /**
+     *  执行任务列表
+     *
+     * @param tasks 任务列表
+     * @param poolEnum 策略
+     * @param <T> 执行类型
+     * @return 获取执行的Future列表
+     */
+    private  <T> List<Future> getFutureList(Collection<Asyncable<T>> tasks, ThreadPoolEnum poolEnum) {
+        AsyncConfiguration strategy = getStrategy(poolEnum);
+        List<Future> listFuture = new ArrayList<>(tasks.size());
+        for (Asyncable asyncable : tasks) {
+            listFuture.add(strategy.run(asyncable));
+        }
+        return listFuture;
+    }
+
+    /**
      *  执行批量任务，最好是同一个{@link Async} 线程池
      *
      * @param tasks 任务列表
@@ -65,21 +179,10 @@ public class AsyncRepository implements BeanFactoryAware {
         }
         StopWatch stopWatchTotal = new StopWatch("total");
         stopWatchTotal.start();
-        List<Future<Object>> listFuture = new ArrayList<>(tasks.size());
-        for (Asyncable asyncable : tasks) {
-            listFuture.add(getStrategy(poolEnum).run(asyncable));
-        }
 
+        List<Future> listFuture = getFutureList(tasks, poolEnum);
         List<Object> result = new ArrayList<>(tasks.size());
-        try {
-            for (Future<Object> future : listFuture) {
-                result.add(future.get());
-            }
-        } catch (InterruptedException e) {
-            log.error("InterruptedException :" + e);
-        } catch (ExecutionException e) {
-            log.error("ExecutionException :" + e);
-        }
+        getAll(listFuture, result);
         stopWatchTotal.stop();
         log.info("总共花费时间为：" + stopWatchTotal.shortSummary());
         return result;
@@ -109,26 +212,16 @@ public class AsyncRepository implements BeanFactoryAware {
         if (tasks == null || tasks.isEmpty()) {
             return null;
         }
+        AsyncConfiguration strategy = getStrategy(poolEnum);
         StopWatch stopWatchTotal = new StopWatch("total");
         stopWatchTotal.start();
-        List<Future<T>> listFuture = new ArrayList<>(tasks.size());
+        List<Future> listFuture = new ArrayList<>(tasks.size());
         for (Asyncable asyncable : tasks) {
-            listFuture.add(getStrategy(poolEnum).run(asyncable));
+            listFuture.add(strategy.run(asyncable));
         }
 
-        List<T> result = new ArrayList<>(tasks.size());
-        try {
-            int i = 1;
-            for (Future<T> future : listFuture) {
-                result.add(future.get());
-                log.info("added:" + i);
-                i++;
-            }
-        } catch (InterruptedException e) {
-            log.error("InterruptedException :" + e);
-        } catch (ExecutionException e) {
-            log.error("ExecutionException :" + e);
-        }
+        List result = new ArrayList<>(tasks.size());
+        getAll(listFuture, result);
         stopWatchTotal.stop();
         log.info("总共花费时间为：" + stopWatchTotal.shortSummary());
         return result;
@@ -143,7 +236,6 @@ public class AsyncRepository implements BeanFactoryAware {
      * @return 数据列表
      */
     public <T> Iterator<T> invokeAllTypeIterator(Collection<Asyncable<T>> tasks, ThreadPoolEnum poolEnum) {
-
         return invokeAllType(tasks, poolEnum).iterator();
     }
 

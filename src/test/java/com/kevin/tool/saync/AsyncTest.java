@@ -73,13 +73,20 @@ public class AsyncTest {
         log.info("得到结果1:" + objects.next());
         log.info("得到结果2:" + objects.next());*/
 
-        final List<Asyncable<String>> task2 = new ArrayList<>();
+        /*final List<Asyncable<String>> task2 = new ArrayList<>();
         for (int i = 0; i < 20; i++) {
             final int temp = i;
             task2.add(() -> syncTask.testAsync2(3 + temp));
         }
         Iterator<String> strs = asyncRepository.invokeAllTypeIterator(task2, SimpleThreadPool.ThreadPoolEnum.CREATE_ORDER);
-        for (int i = 0; i < 20; i++) {
+       */
+        Iterator<Object> strs = asyncRepository.addAsyncable(() -> syncTask.testAsync2(3))
+                .addAsyncable(() -> syncTask.testAsync2(3))
+                .addAsyncable(() -> syncTask.testAsync2(3))
+                .strategy(SimpleThreadPool.ThreadPoolEnum.CREATE_ORDER)
+                .invokeAll(SimpleThreadPool.ThreadPoolEnum.CREATE_ORDER)
+                .iterator();
+        for (int i = 0; i < 3; i++) {
             log.info("得到结果1:" + strs.next());
         }
 

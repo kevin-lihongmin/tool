@@ -22,7 +22,7 @@ public class CreateOrderImpl extends AsyncConfiguration {
 
     @Override
     @Async("createOrder")
-    public Future<Object> run(Asyncable<Object> asyncable) {
+    public Future run(Asyncable asyncable) {
         log.info("执行的当前线程为：" + Thread.currentThread().getName());
         return new AsyncResult<>(asyncable.call());
     }

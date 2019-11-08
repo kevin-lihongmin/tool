@@ -27,7 +27,7 @@ public abstract class AsyncConfiguration {
      * @param asyncable 执行回调
      * @return 直接结果
      */
-    public abstract Future<Object> run(Asyncable<Object> asyncable) ;
+    public abstract Future run(Asyncable asyncable);
 
     @Bean("createOrder")
     public ThreadPoolExecutor initCreateOrder() {

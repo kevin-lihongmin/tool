@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 @EnableTimeConsume
 @EnableAsync
 //@ComponentScan("com.kevin.tool")
-//@EnableTransactionManagement
+@EnableTransactionManagement
 public class KevinToolApplication {
 
 	public static void main(String[] args) {
