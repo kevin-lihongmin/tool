@@ -3,6 +3,7 @@ package com.kevin.tool.springboot.event;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  *  事件监听
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Component;
  * @since 1.0.0
  */
 @Component
+@Transactional
 public class UserListener {
 
     @EventListener

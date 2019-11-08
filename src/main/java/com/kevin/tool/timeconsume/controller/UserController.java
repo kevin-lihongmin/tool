@@ -32,8 +32,8 @@ public class UserController {
     @GetMapping("getUser")
     @TimeConsume(taskName = "UserController.getUser", print = true)
     public String getUser() throws InterruptedException {
-        int init = userService.getInit();
-        int inr = userService.getInr(init);
+        userService.getInit();
+        int inr = userService.getInr(5);
         return "ok:" + inr;
     }
 

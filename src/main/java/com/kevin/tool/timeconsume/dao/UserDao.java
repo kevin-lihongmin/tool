@@ -10,7 +10,6 @@ import org.springframework.stereotype.Repository;
 //@TimeConsume(taskName = "dao", print = true)
 public class UserDao {
 
-    @Async
     @TimeConsume(taskName = "UserDao.getInit", print = true)
     public void getInit() throws InterruptedException {
         Thread.sleep(1000);
