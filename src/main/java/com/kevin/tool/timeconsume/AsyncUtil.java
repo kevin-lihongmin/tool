@@ -12,6 +12,8 @@ import java.util.concurrent.Future;
 @Slf4j
 public class AsyncUtil {
 
+    private static ThreadLocal<StopWatch> threadLocal = ThreadLocal.withInitial(() -> new StopWatch());
+
     /**
      *  执行批量任务，最好是同一个{@link Async} 线程池
      *
@@ -78,8 +80,11 @@ public class AsyncUtil {
 
         LinkedHashSet<T> result = new LinkedHashSet<>(tasks.size());
         try {
+            int i = 1;
             for (Future<T> future : listFuture) {
                 result.add(future.get());
+                log.info("added:" + i);
+                i++;
             }
         } catch (InterruptedException e) {
             log.error("InterruptedException :" + e);

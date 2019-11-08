@@ -34,7 +34,7 @@ public class SyncTask {
 
     @Async("create_order")
     public Future<Object> test(Asyncable asyncable) {
-        return new AsyncResult<Object>(asyncable.call());
+        return new AsyncResult<>(asyncable.call());
     }
 
     public Integer testAsync3(int i) {
