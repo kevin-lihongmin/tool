@@ -70,13 +70,19 @@ public class AsyncTest {
         List<Asyncable<Object>> task = new ArrayList<>();
         task.add(() -> syncTask.testAsync2(3));
         task.add(() -> syncTask.testAsync3(3));
-        LinkedHashSet<Object> objects = AsyncUtil.invokeAllObj(task, AsyncConfiguration.AsyncCall.CREATE_ORDER);
-        Iterator<Object> iterator = objects.iterator();
-        Class<? extends Iterator> aClass = iterator.getClass();
-        System.out.println(aClass);
-        String next = (String) iterator.next();
-        Integer next1 = (Integer) iterator.next();
-        log.info("得到结果1:" + next);
-        log.info("得到结果2:" + next1);
+        Iterator<Object> objects = AsyncUtil.invokeAllIterator(task, AsyncConfiguration.AsyncCall.CREATE_ORDER);
+        log.info("得到结果1:" + objects.next());
+        log.info("得到结果2:" + objects.next());
+
+        final List<Asyncable<String>> task2 = new ArrayList<>();
+        for (int i = 0; i < 20; i++) {
+            final int temp = i;
+            task2.add(() -> syncTask.testAsync2(3 + temp));
+        }
+        Iterator<String> strs = AsyncUtil.invokeAllTypeIterator(task2, AsyncConfiguration.AsyncCall.CREATE_ORDER);
+        while (strs.hasNext()) {
+            log.info("得到结果1:" + strs.next());
+        }
+
     }
 }

@@ -16,14 +16,14 @@ public class AsyncConfiguration {
 
     public enum AsyncCall {
 
-        CREATE_ORDER{
+        CREATE_ORDER {
             @Async("create_order")
-            public Future<Object> run(Asyncable asyncable) {
-                return new AsyncResult<>(asyncable);
+            public Future<Object> run(Asyncable<Object> asyncable) {
+                return new AsyncResult<>(asyncable.call());
             }
         };
 
-        public abstract Future<Object> run(Asyncable asyncable);
+        public abstract Future<Object> run(Asyncable<Object> asyncable);
     }
 
 
