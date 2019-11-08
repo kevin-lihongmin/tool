@@ -1,4 +1,4 @@
-package com.kevin.tool.timeconsume;
+package com.kevin.tool.async;
 
 import org.springframework.scheduling.annotation.Async;
 

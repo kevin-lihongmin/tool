@@ -1,24 +1,20 @@
 package com.kevin.tool.saync;
 
 import com.kevin.tool.KevinToolApplication;
+import com.kevin.tool.async.SimpleThreadPool;
 import com.kevin.tool.async.SyncTask;
-import com.kevin.tool.springboot.event.User;
-import com.kevin.tool.springboot.event.UserService;
-import com.kevin.tool.timeconsume.AsyncConfiguration;
-import com.kevin.tool.timeconsume.AsyncUtil;
-import com.kevin.tool.timeconsume.Asyncable;
+import com.kevin.tool.async.AsyncRepository;
+import com.kevin.tool.async.Asyncable;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.util.StopWatch;
 
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -36,6 +32,9 @@ public class AsyncTest {
 
     @Autowired
     private SyncTask syncTask;
+
+    @Autowired
+    private AsyncRepository asyncRepository;
 
     @Test
     public void testAsync1() throws InterruptedException, ExecutionException {
@@ -67,20 +66,20 @@ public class AsyncTest {
 
     @Test
     public void test2() {
-        List<Asyncable<Object>> task = new ArrayList<>();
+        /*List<Asyncable<Object>> task = new ArrayList<>();
         task.add(() -> syncTask.testAsync2(3));
         task.add(() -> syncTask.testAsync3(3));
-        Iterator<Object> objects = AsyncUtil.invokeAllIterator(task, AsyncConfiguration.AsyncCall.CREATE_ORDER);
+        Iterator<Object> objects = asyncRepository.invokeAllIterator(task);
         log.info("得到结果1:" + objects.next());
-        log.info("得到结果2:" + objects.next());
+        log.info("得到结果2:" + objects.next());*/
 
         final List<Asyncable<String>> task2 = new ArrayList<>();
         for (int i = 0; i < 20; i++) {
             final int temp = i;
             task2.add(() -> syncTask.testAsync2(3 + temp));
         }
-        Iterator<String> strs = AsyncUtil.invokeAllTypeIterator(task2, AsyncConfiguration.AsyncCall.CREATE_ORDER);
-        while (strs.hasNext()) {
+        Iterator<String> strs = asyncRepository.invokeAllTypeIterator(task2, SimpleThreadPool.ThreadPoolEnum.CREATE_ORDER);
+        for (int i = 0; i < 20; i++) {
             log.info("得到结果1:" + strs.next());
         }
 

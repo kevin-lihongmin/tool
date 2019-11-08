@@ -17,7 +17,7 @@ public class UserService {
     private UserDao userDao;
 
     @TimeConsume(taskName = "UserService.getInit")
-    @Async("create_order")
+    @Async("createOrder")
     public Integer getInit() throws InterruptedException {
         Thread.sleep(3000);
         userDao.getInit();
@@ -25,7 +25,7 @@ public class UserService {
     }
 
     @TimeConsume(taskName = "UserService.getInr", print = true)
-    @Async("create_order")
+    @Async("createOrder")
     public Integer getInr(int i) throws InterruptedException {
         Thread.sleep(2000);
         return userDao.getInr(i);

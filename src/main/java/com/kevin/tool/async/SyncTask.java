@@ -1,17 +1,15 @@
 package com.kevin.tool.async;
 
-import com.kevin.tool.timeconsume.Asyncable;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
 import java.util.concurrent.Future;
 
 @Component
 public class SyncTask {
 
-    @Async("create_order")
+    @Async("createOrder")
     public Future<String> testAsync1(int i) {
         try {
             Thread.sleep(5000 / (i + 1));
@@ -32,7 +30,7 @@ public class SyncTask {
         return "hello!!!";
     }
 
-    @Async("create_order")
+    @Async("createOrder")
     public Future<Object> test(Asyncable asyncable) {
         return new AsyncResult<>(asyncable.call());
     }

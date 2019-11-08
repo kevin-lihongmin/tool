@@ -1,4 +1,4 @@
-package com.kevin.tool.timeconsume;
+package com.kevin.tool.async;
 
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
@@ -38,7 +38,7 @@ public class SimpleThreadPool {
     public enum ThreadPoolEnum {
         MANAGE("manage", "统计订单相关线程池", 5, 8, 30, TimeUnit.SECONDS,
                 new LinkedBlockingDeque(50), new ThreadPoolExecutor.AbortPolicy()),
-        CREATE_ORDER("create_order", "创建订单相关线程池", 5, 20, 60, TimeUnit.SECONDS,
+        CREATE_ORDER("createOrder", "创建订单相关线程池", 5, 20, 60, TimeUnit.SECONDS,
                 new LinkedBlockingDeque(50), new ThreadPoolExecutor.CallerRunsPolicy());
 
         ThreadPoolEnum(String taskName, String detail, int corePoolNum, int maxPoolNum, int deleteThreadNum, TimeUnit deleteTreadUnit, LinkedBlockingDeque blockingDeque, RejectedExecutionHandler rejectedExecutionHandler) {
