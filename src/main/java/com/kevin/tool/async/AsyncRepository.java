@@ -1,6 +1,7 @@
 package com.kevin.tool.async;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.aop.framework.AopProxyUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
@@ -56,8 +57,11 @@ public class AsyncRepository implements BeanFactoryAware {
      * @return 执行的Bean
      */
     public AsyncConfiguration getStrategy(ThreadPoolEnum poolEnum) {
-        AsyncConfiguration bean = (AsyncConfiguration)beanFactory.getBean(poolEnum.taskName + SUFFIX);
-        return bean;
+        Object bean = beanFactory.getBean(poolEnum.taskName + SUFFIX);
+        System.out.println(bean.getClass());
+        Object singletonTarget = AopProxyUtils.getSingletonTarget(bean);
+        System.out.println(singletonTarget.getClass());
+        return (AsyncConfiguration)singletonTarget;
     }
 
     /**
