@@ -82,8 +82,8 @@ public class AsyncTest {
        */
         Iterator<Object> strs = asyncRepository.addAsyncable(() -> syncTask.testAsync2(3))
                 .addAsyncable(() -> syncTask.testAsync2(3))
-                .addAsyncable(() -> syncTask.testAsync2(3))
-                .strategy(SimpleThreadPool.ThreadPoolEnum.CREATE_ORDER)
+                .addAsyncable(() -> syncTask.testAsync3(3))
+//                .strategy(SimpleThreadPool.ThreadPoolEnum.CREATE_ORDER)
                 .invokeAll(SimpleThreadPool.ThreadPoolEnum.CREATE_ORDER)
                 .iterator();
         for (int i = 0; i < 3; i++) {

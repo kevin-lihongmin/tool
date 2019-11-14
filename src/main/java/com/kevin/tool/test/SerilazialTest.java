@@ -16,6 +16,7 @@ public class SerilazialTest {
 
         Result result = JSON.parseObject(str, Result.class);
         System.out.println(result);
+
     }
 
     @Data

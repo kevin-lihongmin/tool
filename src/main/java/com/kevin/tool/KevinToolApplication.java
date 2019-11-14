@@ -7,6 +7,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RestController;
 
 
@@ -20,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 @EnableTimeConsume
 @EnableAsync
 //@ComponentScan("com.kevin.tool")
-@EnableTransactionManagement
+//@EnableTransactionManagement
 public class KevinToolApplication {
 
 	public static void main(String[] args) {

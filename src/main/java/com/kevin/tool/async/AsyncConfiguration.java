@@ -2,11 +2,8 @@ package com.kevin.tool.async;
 
 import com.google.common.collect.Sets;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.support.BeanDefinitionBuilder;
-import org.springframework.beans.factory.support.BeanDefinitionRegistry;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.ImportBeanDefinitionRegistrar;
-import org.springframework.core.type.AnnotationMetadata;
 import org.springframework.scheduling.annotation.Async;
 
 import java.util.Collections;
@@ -28,7 +25,7 @@ import static com.kevin.tool.async.SimpleThreadPool.ThreadPoolEnum;
  */
 @Configuration
 @Slf4j
-public abstract class AsyncConfiguration implements ImportBeanDefinitionRegistrar {
+public abstract class AsyncConfiguration /*implements ImportBeanDefinitionRegistrar */{
 
     /**
      *  需要注入线程池的bean
@@ -43,7 +40,7 @@ public abstract class AsyncConfiguration implements ImportBeanDefinitionRegistra
      * @param registry 注入器
      * @see org.springframework.context.support.AbstractApplicationContext
      */
-    @Override
+    /*@Override
     public void registerBeanDefinitions(AnnotationMetadata importingClassMetadata, BeanDefinitionRegistry registry) {
         REGIST_THREAD_POOL.forEach(pool -> {
             ThreadPoolExecutor threadPoolExecutor = THREAD_POOL_EXECUTOR_MAP.get(pool);
@@ -52,7 +49,7 @@ public abstract class AsyncConfiguration implements ImportBeanDefinitionRegistra
             registry.registerBeanDefinition(pool.taskName, builder.getBeanDefinition());
         });
 
-    }
+    }*/
 
     /**
      *  每个子类线程池实现自己的run
@@ -61,10 +58,10 @@ public abstract class AsyncConfiguration implements ImportBeanDefinitionRegistra
      */
     public abstract Future run(Asyncable asyncable);
 
-    /*@Bean("createOrder")
+    @Bean("createOrder")
     public ThreadPoolExecutor initCreateOrder() {
         return THREAD_POOL_EXECUTOR_MAP.get(ThreadPoolEnum.CREATE_ORDER);
     }
-*/
+
 
 }

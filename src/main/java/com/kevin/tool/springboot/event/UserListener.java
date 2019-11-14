@@ -12,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
  * @since 1.0.0
  */
 @Component
-@Transactional
 public class UserListener {
 
     @EventListener

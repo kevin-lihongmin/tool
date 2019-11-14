@@ -2,6 +2,7 @@ package com.kevin.tool.springboot.event;
 
 import org.springframework.beans.BeansException;
 import org.springframework.context.*;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 @Service("eventUserService")
@@ -20,6 +21,7 @@ public class UserService implements ApplicationContextAware, ApplicationEventPub
         this.applicationEventPublisher = applicationEventPublisher;
     }
 
+    @Async
     public String addUser(User user) {
         // 保存用户
         user.setId(1L);

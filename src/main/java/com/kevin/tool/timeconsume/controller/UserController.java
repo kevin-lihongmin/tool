@@ -32,6 +32,8 @@ public class UserController {
     @GetMapping("getUser")
     @TimeConsume(taskName = "UserController.getUser", print = true)
     public String getUser() throws InterruptedException {
+        String name = Thread.currentThread().getName();
+        System.out.println("Thread.currentThread().getName():" + name);
         userService.getInit();
         int inr = userService.getInr(5);
         return "ok:" + inr;

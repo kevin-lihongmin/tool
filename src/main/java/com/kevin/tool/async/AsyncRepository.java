@@ -1,13 +1,11 @@
 package com.kevin.tool.async;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.aop.framework.AopProxyUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Repository;
-import org.springframework.util.Assert;
 import org.springframework.util.StopWatch;
 
 import java.util.*;
@@ -57,11 +55,13 @@ public class AsyncRepository implements BeanFactoryAware {
      * @return 执行的Bean
      */
     public AsyncConfiguration getStrategy(ThreadPoolEnum poolEnum) {
-        Object bean = beanFactory.getBean(poolEnum.taskName + SUFFIX);
+        /*Object bean = beanFactory.getBean(poolEnum.taskName + SUFFIX);
         System.out.println(bean.getClass());
         Object singletonTarget = AopProxyUtils.getSingletonTarget(bean);
         System.out.println(singletonTarget.getClass());
-        return (AsyncConfiguration)singletonTarget;
+        return (AsyncConfiguration)singletonTarget;*/
+        AsyncConfiguration configuration = (AsyncConfiguration)beanFactory.getBean(poolEnum.taskName + SUFFIX);
+        return configuration;
     }
 
     /**
@@ -136,6 +136,7 @@ public class AsyncRepository implements BeanFactoryAware {
     }
     /**
      *  阻塞获取所有的结果
+     *  有异常信息往上抛出，让上层处理 或者 让事务和分布式（二阶提交）事务进行回滚
      *
      * @param listFuture Future集合
      * @param result 封装结果集合
@@ -147,8 +148,10 @@ public class AsyncRepository implements BeanFactoryAware {
             }
         } catch (InterruptedException e) {
             log.error("InterruptedException :" + e);
+            throw new RuntimeException(e);
         } catch (ExecutionException e) {
             log.error("ExecutionException :" + e);
+            throw new RuntimeException(e);
         }
     }
 
