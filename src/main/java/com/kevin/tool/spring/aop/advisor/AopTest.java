@@ -4,6 +4,7 @@ import org.aopalliance.intercept.MethodInvocation;
 import org.springframework.aop.AfterReturningAdvice;
 import org.springframework.aop.MethodBeforeAdvice;
 import org.springframework.aop.ThrowsAdvice;
+import org.springframework.aop.framework.ProxyFactory;
 import org.springframework.aop.framework.adapter.AfterReturningAdviceInterceptor;
 import org.springframework.aop.framework.adapter.ThrowsAdviceInterceptor;
 import org.springframework.cglib.proxy.MethodInterceptor;
@@ -41,5 +42,7 @@ public class AopTest extends AfterReturningAdviceInterceptor implements MethodBe
         super(advice);
     }
 
-
+    public static void main(String[] args) {
+        ProxyFactory proxyFactory = new ProxyFactory();
+    }
 }
