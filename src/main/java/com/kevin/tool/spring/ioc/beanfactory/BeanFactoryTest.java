@@ -1,4 +1,4 @@
-package com.kevin.tool.spring;
+package com.kevin.tool.spring.ioc.beanfactory;
 
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
@@ -16,7 +16,7 @@ import org.springframework.web.context.support.XmlWebApplicationContext;
 public class BeanFactoryTest {
 
     public static void main(String[] args) {
-        BeanFactory beanFactory = new XmlBeanFactory(new ClassPathResource(""));
+        BeanFactory beanFactory = new XmlBeanFactory(new ClassPathResource("spring-bean.xml"));
         Object kevin = beanFactory.getBean("kevin");
         System.out.println(kevin);
     }
