@@ -9,4 +9,6 @@ package com.kevin.tool.spring.aop;
 public interface DemoService {
 
     String doSomething(String arg);
+
+    String doOther(String arg);
 }

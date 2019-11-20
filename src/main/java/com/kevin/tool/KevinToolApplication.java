@@ -27,8 +27,9 @@ import org.springframework.web.bind.annotation.RestController;
 @EnableTimeConsume
 @EnableAsync
 //@ComponentScan("com.kevin.tool")
-//@EnableTransactionManagement
+@EnableTransactionManagement
 @SpringBootApplication
+@EnableAspectJAutoProxy(proxyTargetClass = true, exposeProxy = true)
 public class KevinToolApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(KevinToolApplication.class, args);

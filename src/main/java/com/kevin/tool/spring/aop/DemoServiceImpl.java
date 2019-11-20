@@ -7,10 +7,15 @@ package com.kevin.tool.spring.aop;
  * @since 1.0.0
  */
 public class DemoServiceImpl implements DemoService {
-
     @Override
     public String doSomething(String arg) {
-        System.out.println("我执行完成了任务!!!");
+        System.out.println("doSomething!!!");
         return "ok";
+    }
+
+    @Override
+    public String doOther(String arg) {
+        System.out.println("doOther!!!");
+        return "other";
     }
 }
