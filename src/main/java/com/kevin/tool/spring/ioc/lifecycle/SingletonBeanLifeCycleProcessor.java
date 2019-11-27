@@ -18,7 +18,9 @@ public class SingletonBeanLifeCycleProcessor implements BeanPostProcessor {
 
     @Override
     public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
-        if ("kevin".equals(beanName)) {
+
+        if (/*"kevin".equals(beanName)*/SingletonBeanLifeCycle.class.isAssignableFrom(bean.getClass())) {
+
             System.out.println("4-1）、Processor-1-Before： beanName=" + beanName + "，bean Class<?>=" + bean.getClass() + "的bean调用getBean方法,\n" +
                     "-----BeanPostProcessor.postProcessBeforeInitialization回调了SingletonBeanLifeCycleProcessor！");
             ((SingletonBeanLifeCycle)bean).setTestName("kevin-2");
@@ -28,7 +30,7 @@ public class SingletonBeanLifeCycleProcessor implements BeanPostProcessor {
 
     @Override
     public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
-        if ("kevin".equals(beanName)) {
+        if (SingletonBeanLifeCycle.class.isAssignableFrom(bean.getClass())) {
             System.out.println("7-1）、Processor-1-After： beanName=" + beanName + "，bean Class<?>=" + bean.getClass() + "的bean调用getBean方法, \n" +
                     "-----BeanPostProcessor.postProcessAfterInitialization回调了SingletonBeanLifeCycleProcessor！");
         }

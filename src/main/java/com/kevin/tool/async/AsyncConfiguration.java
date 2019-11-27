@@ -2,8 +2,15 @@ package com.kevin.tool.async;
 
 import com.google.common.collect.Sets;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
+import org.springframework.beans.factory.support.BeanDefinitionBuilder;
+import org.springframework.beans.factory.support.BeanDefinitionRegistry;
+import org.springframework.beans.factory.support.BeanDefinitionRegistryPostProcessor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.ImportBeanDefinitionRegistrar;
+import org.springframework.core.type.AnnotationMetadata;
 import org.springframework.scheduling.annotation.Async;
 
 import java.util.Collections;
@@ -25,14 +32,19 @@ import static com.kevin.tool.async.SimpleThreadPool.ThreadPoolEnum;
  */
 @Configuration
 @Slf4j
-public abstract class AsyncConfiguration /*implements ImportBeanDefinitionRegistrar */{
+public abstract class AsyncConfiguration implements BeanDefinitionRegistryPostProcessor /*ImportBeanDefinitionRegistrar*/, AsyncRun {
 
     /**
      *  需要注入线程池的bean
      */
-    private static final Set<SimpleThreadPool.ThreadPoolEnum> REGIST_THREAD_POOL = Collections.unmodifiableSet(
+    private static final Set<SimpleThreadPool.ThreadPoolEnum> REGISTER_THREAD_POOL = Collections.unmodifiableSet(
             Sets.newHashSet(ThreadPoolEnum.CREATE_ORDER)
     );
+
+    @Override
+    public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
+
+    }
 
     /**
      *  动态注入bean
@@ -42,20 +54,33 @@ public abstract class AsyncConfiguration /*implements ImportBeanDefinitionRegist
      */
     /*@Override
     public void registerBeanDefinitions(AnnotationMetadata importingClassMetadata, BeanDefinitionRegistry registry) {
-        REGIST_THREAD_POOL.forEach(pool -> {
+        REGISTER_THREAD_POOL.forEach(pool -> {
+            ThreadPoolExecutor threadPoolExecutor = THREAD_POOL_EXECUTOR_MAP.get(pool);
+            BeanDefinitionBuilder builder = BeanDefinitionBuilder.rootBeanDefinition(ThreadPoolExecutor.class)
+                    .addConstructorArgValue(threadPoolExecutor);
+            registry..registerBeanDefinition(pool.taskName, builder.getBeanDefinition());
+        });
+
+    }*/
+
+
+
+    @Override
+    public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry registry) throws BeansException {
+        /*REGISTER_THREAD_POOL.forEach(pool -> {
             ThreadPoolExecutor threadPoolExecutor = THREAD_POOL_EXECUTOR_MAP.get(pool);
             BeanDefinitionBuilder builder = BeanDefinitionBuilder.rootBeanDefinition(ThreadPoolExecutor.class)
                     .addConstructorArgValue(threadPoolExecutor);
             registry.registerBeanDefinition(pool.taskName, builder.getBeanDefinition());
-        });
-
-    }*/
+        });*/
+    }
 
     /**
      *  每个子类线程池实现自己的run
      * @param asyncable 执行回调
      * @return 直接结果
      */
+    @Override
     public abstract Future run(Asyncable asyncable);
 
     @Bean("createOrder")

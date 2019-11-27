@@ -1,6 +1,8 @@
 package com.kevin.tool.async;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.aop.framework.AopProxy;
+import org.springframework.aop.framework.AopProxyUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
@@ -54,14 +56,18 @@ public class AsyncRepository implements BeanFactoryAware {
      * @param poolEnum 线程名称
      * @return 执行的Bean
      */
-    public AsyncConfiguration getStrategy(ThreadPoolEnum poolEnum) {
-        /*Object bean = beanFactory.getBean(poolEnum.taskName + SUFFIX);
-        System.out.println(bean.getClass());
-        Object singletonTarget = AopProxyUtils.getSingletonTarget(bean);
+    public AsyncRun getStrategy(ThreadPoolEnum poolEnum) {
+        Object proxy = beanFactory.getBean(poolEnum.taskName + SUFFIX);
+        System.out.println(proxy);
+        System.out.println(proxy.getClass());
+        Object singletonTarget = AopProxyUtils.getSingletonTarget(proxy);
         System.out.println(singletonTarget.getClass());
-        return (AsyncConfiguration)singletonTarget;*/
-        AsyncConfiguration configuration = (AsyncConfiguration)beanFactory.getBean(poolEnum.taskName + SUFFIX);
-        return configuration;
+//        Object proxy1 = ((AopProxy) proxy).getProxy();
+
+
+        return (AsyncRun)proxy;
+        /*AsyncConfiguration configuration = (AsyncConfiguration)beanFactory.getBean(poolEnum.taskName + SUFFIX);
+        return configuration;*/
     }
 
     /**
@@ -94,7 +100,7 @@ public class AsyncRepository implements BeanFactoryAware {
     public List invokeAll(ThreadPoolEnum poolEnum) {
         Queue<Asyncable> queue = QUEUE.get();
         queue.element();
-        AsyncConfiguration strategy = getStrategy(poolEnum);
+        AsyncRun strategy = getStrategy(poolEnum);
 
         List<Future> listFuture = new ArrayList<>(queue.size());
         while (queue.peek() != null) {
@@ -116,7 +122,7 @@ public class AsyncRepository implements BeanFactoryAware {
         queue.element();
         List<Object> result = new ArrayList<>(queue.size());
 
-        AsyncConfiguration strategy = getStrategy(threadPoolEnum);
+        AsyncRun strategy = getStrategy(threadPoolEnum);
         List<Future> listFuture = new ArrayList<>(queue.size());
         while (queue.peek() != null) {
             listFuture.add(strategy.run(queue.poll()));
@@ -164,7 +170,7 @@ public class AsyncRepository implements BeanFactoryAware {
      * @return 获取执行的Future列表
      */
     private  <T> List<Future> getFutureList(Collection<Asyncable<T>> tasks, ThreadPoolEnum poolEnum) {
-        AsyncConfiguration strategy = getStrategy(poolEnum);
+        AsyncRun strategy = getStrategy(poolEnum);
         List<Future> listFuture = new ArrayList<>(tasks.size());
         for (Asyncable asyncable : tasks) {
             listFuture.add(strategy.run(asyncable));
@@ -219,7 +225,7 @@ public class AsyncRepository implements BeanFactoryAware {
         if (tasks == null || tasks.isEmpty()) {
             return null;
         }
-        AsyncConfiguration strategy = getStrategy(poolEnum);
+        AsyncRun strategy = getStrategy(poolEnum);
         StopWatch stopWatchTotal = new StopWatch("total");
         stopWatchTotal.start();
         List<Future> listFuture = new ArrayList<>(tasks.size());
