@@ -4,11 +4,7 @@ import com.kevin.tool.timeconsume.TimeConsume;
 import com.kevin.tool.timeconsume.dao.UserDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
-import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.concurrent.Callable;
 
 
 /**

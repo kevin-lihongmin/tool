@@ -6,6 +6,7 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.*;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ImportResource;
 import org.springframework.stereotype.Component;
 
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Component;
  * @date 2019/11/14 15:07
  * @since 1.0.0
  */
+@Component
 @Data
 @ToString
 public class SingletonBeanLifeCycle implements BeanNameAware, BeanFactoryAware,
