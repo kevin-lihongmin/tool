@@ -9,5 +9,5 @@
           destroy-method="destroyMedthod">
         <property name="testName" value="testkevin-1" />
     </bean>
-
+    <aop:aspectj-autoproxy proxy-target-class="true" expose-proxy="true" />
 </beans>

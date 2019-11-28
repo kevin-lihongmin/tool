@@ -10,6 +10,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.concurrent.Callable;
 
+
+/**
+ * 用户服务
+ * @author lihongmin
+ * @date 2019/11/23 8:39
+ */
 @Service
 public class UserService {
 
@@ -23,6 +29,8 @@ public class UserService {
         userDao.getInit();
         return 2;
     }
+
+
 
     @TimeConsume(taskName = "UserService.getInr", print = true)
     @Async("createOrder")
