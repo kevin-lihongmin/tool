@@ -6,6 +6,7 @@ import org.springframework.aop.framework.AopProxyUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StopWatch;

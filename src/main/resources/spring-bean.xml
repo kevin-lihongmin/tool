@@ -15,10 +15,10 @@
           destroy-method="destroyMedthod">
         <property name="testName" value="testkevin-1" />
     </bean>
-    <aop:aspectj-autoproxy proxy-target-class="true" expose-proxy="true" />
+    <!--<aop:aspectj-autoproxy proxy-target-class="true" expose-proxy="true" />-->
     <alias name="kevin" alias="kevin1,kevin2" />
-    <beans />
 
+    <bean id="myApplicationListener" class="com.kevin.tool.spring.ioc.applicationcontext.MyApplicationListener" />
 </beans>
 
 <!--

@@ -4,7 +4,9 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -22,7 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 //@EnableTimeConsume
 @EnableAsync
-//@ComponentScan("com.kevin.tool")
+@ComponentScan("com.kevin.tool")
 @EnableTransactionManagement
 @SpringBootApplication
 @EnableAspectJAutoProxy(proxyTargetClass = true, exposeProxy = true)
@@ -43,12 +45,10 @@ public class KevinToolApplication implements BeanFactoryAware {
     }
 
     public static void main(String[] args) {
-
-        SpringApplication.run(KevinToolApplication.class, args);
+        SpringApplication springApplication = new SpringApplication(KevinToolApplication.class);
+        springApplication.setWebApplicationType(WebApplicationType.SERVLET);
+        springApplication.run(args);
     }
 }
-
-
-
 
 
