@@ -4,6 +4,11 @@ spring:
   application:
     name: tool
 
+  mvc:
+    view:
+      prefix: /WEB-INF/views/
+      suffix: .html
+
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
