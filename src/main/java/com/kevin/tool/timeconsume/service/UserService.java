@@ -3,6 +3,7 @@ package com.kevin.tool.timeconsume.service;
 import com.kevin.tool.timeconsume.TimeConsume;
 import com.kevin.tool.timeconsume.dao.UserDao;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 public class UserService {
 
     @Autowired
+    @Qualifier("userDao")
     private UserDao userDao;
 
     @TimeConsume(taskName = "UserService.getInit")

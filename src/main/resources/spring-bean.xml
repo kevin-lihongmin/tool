@@ -19,6 +19,7 @@
     <alias name="kevin" alias="kevin1,kevin2" />
 
     <bean id="myApplicationListener" class="com.kevin.tool.spring.ioc.applicationcontext.MyApplicationListener" />
+
 </beans>
 
 <!--

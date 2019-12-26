@@ -32,7 +32,7 @@ class ThreadJpaRepositoriesRegistrar extends RepositoryBeanDefinitionRegistrarSu
 
 	/**
 	 * (non-Javadoc)
-	 * @see org.springframework.data.repository.config.RepositoryBeanDefinitionRegistrarSupport#getAnnotation()
+	 * @see RepositoryBeanDefinitionRegistrarSupport#getAnnotation()
 	 */
 	@Override
 	protected Class<? extends Annotation> getAnnotation() {
@@ -41,7 +41,7 @@ class ThreadJpaRepositoriesRegistrar extends RepositoryBeanDefinitionRegistrarSu
 
 	/**
 	 * (non-Javadoc)
-	 * @see org.springframework.data.repository.config.RepositoryBeanDefinitionRegistrarSupport#getExtension()
+	 * @see RepositoryBeanDefinitionRegistrarSupport#getExtension()
 	 */
 	@Override
 	protected RepositoryConfigurationExtension getExtension() {

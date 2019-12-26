@@ -60,7 +60,7 @@ public class ReplaceTransactionInterceptor implements BeanFactoryPostProcessor {
 
 
     static {
-        Class<ProxyTransactionManagementConfiguration> clazz = ProxyTransactionManagementConfiguration.class;
+        Class<? extends Class> clazz = ProxyTransactionManagementConfiguration.class.getClass();
         if (THREAD_POOL_FLAG) {
             try {
                 Method transactionAdvisor = clazz.getMethod("transactionAdvisor", TransactionAttributeSource.class, TransactionInterceptor.class);

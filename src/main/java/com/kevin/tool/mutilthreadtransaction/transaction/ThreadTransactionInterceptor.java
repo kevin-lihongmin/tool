@@ -5,10 +5,13 @@ import org.springframework.aop.framework.autoproxy.AbstractAdvisorAutoProxyCreat
 import org.springframework.aop.framework.autoproxy.AbstractAutoProxyCreator;
 import org.springframework.aop.framework.autoproxy.InfrastructureAdvisorAutoProxyCreator;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
+import org.springframework.transaction.interceptor.TransactionAttributeSource;
 import org.springframework.transaction.interceptor.TransactionInterceptor;
 
 import java.lang.reflect.Method;
+import java.util.Properties;
 
 import static com.kevin.tool.mutilthreadtransaction.transaction.TransactionThreadPool.hasTransaction;
 
@@ -20,6 +23,17 @@ import static com.kevin.tool.mutilthreadtransaction.transaction.TransactionThrea
  */
 @Component
 public class ThreadTransactionInterceptor extends TransactionInterceptor {
+
+    public ThreadTransactionInterceptor() {
+    }
+
+    public ThreadTransactionInterceptor(PlatformTransactionManager ptm, Properties attributes) {
+        super(ptm, attributes);
+    }
+
+    public ThreadTransactionInterceptor(PlatformTransactionManager ptm, TransactionAttributeSource tas) {
+        super(ptm, tas);
+    }
 
     /**
      *  重写父类

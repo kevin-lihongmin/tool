@@ -31,7 +31,7 @@ public class ReplaceJpaRepository implements BeanDefinitionRegistryPostProcessor
         for (String str : beanNamesForType) {
             BeanDefinition beanDefinition = factory.getBeanDefinition(str);
             beanDefinition.setBeanClassName(ThreadJpaRepositoryFactoryBean.class.getName());
-            System.out.println(beanDefinition.getFactoryBeanName());
+            /*System.out.println(beanDefinition.getFactoryBeanName());*/
             registry.removeBeanDefinition(str);
             registry.registerBeanDefinition(str, beanDefinition);
         }

@@ -63,24 +63,25 @@ class ThreadTransactionalRepositoryProxyPostProcessor implements RepositoryProxy
 
 	/**
 	 * (non-Javadoc)
-	 * @see org.springframework.data.repository.core.support.RepositoryProxyPostProcessor#postProcess(ProxyFactory, org.springframework.data.repository.core.RepositoryInformation)
+	 * @see RepositoryProxyPostProcessor#postProcess(ProxyFactory, RepositoryInformation)
 	 */
 	@Override
 	public void postProcess(ProxyFactory factory, RepositoryInformation repositoryInformation) {
 
-		/*CustomAnnotationTransactionAttributeSource transactionAttributeSource = new CustomAnnotationTransactionAttributeSource();
+		CustomAnnotationTransactionAttributeSource transactionAttributeSource = new CustomAnnotationTransactionAttributeSource();
 		transactionAttributeSource.setRepositoryInformation(repositoryInformation);
 		transactionAttributeSource.setEnableDefaultTransactions(enableDefaultTransactions);
 
 		@SuppressWarnings("null") // TODO: Remove
-		TransactionInterceptor transactionInterceptor = new TransactionInterceptor(null, transactionAttributeSource);
+		/*TransactionInterceptor transactionInterceptor = new TransactionInterceptor(null, transactionAttributeSource);
 		transactionInterceptor.setTransactionManagerBeanName(transactionManagerName);
-		transactionInterceptor.setBeanFactory(beanFactory);
-		transactionInterceptor.afterPropertiesSet();*/
+		transactionInterceptor.setBeanFactory(beanFactory);*/
+
 		// 替换硬编码的TransactionInterceptor
-		ThreadTransactionInterceptor transactionInterceptor = beanFactory.getBean(ThreadTransactionInterceptor.class);
+		ThreadTransactionInterceptor transactionInterceptor = new ThreadTransactionInterceptor(null, transactionAttributeSource);
 		transactionInterceptor.setTransactionManagerBeanName(transactionManagerName);
 		transactionInterceptor.setBeanFactory(beanFactory);
+		transactionInterceptor.afterPropertiesSet();
 
 		factory.addAdvice(transactionInterceptor);
 	}
