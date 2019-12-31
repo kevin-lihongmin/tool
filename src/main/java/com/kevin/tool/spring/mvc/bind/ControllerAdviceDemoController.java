@@ -14,8 +14,8 @@ import java.util.Map;
  * @date 2019/12/30 13:57
  * @since 1.0.0
  */
-@RestController
-public class BindDemoController {
+//@RestController
+public class ControllerAdviceDemoController {
 
     @ResponseBody
     @RequestMapping("bindException")
@@ -51,7 +51,7 @@ public class BindDemoController {
     }
 
     @GetMapping("/modelAttributeTest")
-    public String hello(@ModelAttribute("msg") String msg,
+    private String hello(@ModelAttribute("msg") String msg,
                         @ModelAttribute("info") Map<String, String> info) {
         String result = "msg：" + msg + "<br>" + "info：" + info;
         return result;

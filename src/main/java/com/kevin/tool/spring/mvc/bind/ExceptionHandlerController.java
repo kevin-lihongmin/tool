@@ -15,7 +15,7 @@ import java.util.Map;
  * @date 2019/12/30 13:56
  * @since 1.0.0
  */
-@ControllerAdvice(basePackages = "com.kevin.tool")
+//@ControllerAdvice(basePackages = "com.kevin.tool")
 public class ExceptionHandlerController {
 
     /**
@@ -42,7 +42,7 @@ public class ExceptionHandlerController {
     public void addAttributes(Model model) {
         model.addAttribute("msg", "hello");
 
-        HashMap<String, String> map = new HashMap<>();
+        HashMap<String, String> map = new HashMap<>(16);
         map.put("name", "hangge");
         map.put("age", "100");
         model.addAttribute("info", map);
