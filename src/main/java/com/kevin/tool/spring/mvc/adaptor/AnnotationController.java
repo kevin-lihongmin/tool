@@ -1,8 +1,10 @@
 package com.kevin.tool.spring.mvc.adaptor;
 
+import com.kevin.tool.test.SerilazialTest;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter;
 
 /**
@@ -16,7 +18,20 @@ public class AnnotationController {
 
     @ResponseBody
     @RequestMapping("annotationController")
-    public String annotationController() {
-        return "AnnotationController -> @Controller!";
+    public SerilazialTest.User annotationController() {
+
+        return new SerilazialTest.User();
+    }
+
+    @RequestMapping("annotationController2")
+    public ModelAndView annotationController2() {
+        ModelAndView modelAndView = new ModelAndView("test");
+        modelAndView.addObject("key", "ControllerAdaptorController -> Controller！");
+        return modelAndView;
+    }
+
+    @RequestMapping("annotationController3")
+    public String annotationController3() {
+        return "test";
     }
 }
