@@ -40,6 +40,9 @@ public class AsyncRepository implements BeanFactoryAware {
     /**
      *
      *  执行策略
+     *
+     *
+     *
      */
     private static ThreadLocal<ThreadPoolEnum> POOL_ENUM = new ThreadLocal<>();
 
