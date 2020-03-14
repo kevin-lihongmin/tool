@@ -32,10 +32,13 @@ public class AsyncRepository implements BeanFactoryAware {
 
     /**
      *  存放当前线程需要执行的任务
+     *
+     *
      */
     private static ThreadLocal<Queue<Asyncable>> QUEUE = ThreadLocal.withInitial(() -> new ConcurrentLinkedDeque<Asyncable>());
 
     /**
+     *
      *  执行策略
      */
     private static ThreadLocal<ThreadPoolEnum> POOL_ENUM = new ThreadLocal<>();

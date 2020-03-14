@@ -7,7 +7,6 @@
        http://www.kevin.com/schema/kevinInfo
        http://www.kevin.com/schema/kevin.xsd">
 
-    <bean class="" />
 
     <kevin:kevinInfo id="beanId" name="kevin123" />
 
