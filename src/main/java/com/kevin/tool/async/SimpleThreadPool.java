@@ -30,7 +30,7 @@ public class SimpleThreadPool {
     /**
      *  线程池工具map
      */
-    public static final Map<ThreadPoolEnum, ThreadPoolExecutor> THREAD_POOL_EXECUTOR_MAP = new HashMap<ThreadPoolEnum, ThreadPoolExecutor>(16);
+    public static final Map<ThreadPoolEnum, ThreadPoolExecutor> THREAD_POOL_EXECUTOR_MAP = new ConcurrentHashMap<>(16);
 
     /**
      *  线程池集合枚举

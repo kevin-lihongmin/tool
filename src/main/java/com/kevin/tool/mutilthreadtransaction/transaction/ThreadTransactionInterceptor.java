@@ -58,11 +58,15 @@ public class ThreadTransactionInterceptor extends TransactionInterceptor {
      */
     @Override
     protected Object invokeWithinTransaction(Method method, Class<?> targetClass, InvocationCallback invocation) throws Throwable {
-        // 父线程中开启事务，直接执行当前的回调方法
-        if (hasTransaction()) {
+        Boolean hasTransaction = hasTransaction();
+        if (hasTransaction) {
             return invocation.proceedWithInvocation();
         }
-        return super.invokeWithinTransaction(method, targetClass, invocation);
+
+        TransactionThreadPool.INHERITABLE_THREAD.set(Boolean.TRUE);
+        Object result = super.invokeWithinTransaction(method, targetClass, invocation);
+        TransactionThreadPool.INHERITABLE_THREAD.set(Boolean.FALSE);
+        return result;
     }
 
 }

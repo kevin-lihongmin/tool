@@ -13,9 +13,12 @@ import org.springframework.core.type.AnnotationMetadata;
 import org.springframework.data.jpa.repository.support.JpaRepositoryFactoryBean;
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.orm.jpa.EntityManagerHolder;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.support.AbstractPlatformTransactionManager;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import java.util.Iterator;
@@ -42,7 +45,13 @@ public class TransactionThreadPool extends SimpleThreadPool implements BeanFacto
      */
     public static volatile Boolean THREAD_POOL_FLAG = true;
 
-    private JpaTransactionManager jpaTransactionManager;
+    /**
+     * 事务管理器
+     * @see JpaTransactionManager
+     * @see HibernateTransactionManager
+     * @see DataSourceTransactionManager
+     */
+    private AbstractPlatformTransactionManager transactionManager;
 
     /**
      *  父线程开启事务的状态
@@ -68,7 +77,7 @@ public class TransactionThreadPool extends SimpleThreadPool implements BeanFacto
     @Override
     public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
         if (THREAD_POOL_FLAG) {
-            jpaTransactionManager = (JpaTransactionManager) beanFactory.getBean("transactionManager");
+            transactionManager = (JpaTransactionManager) beanFactory.getBean("transactionManager");
         }
     }
 
@@ -121,10 +130,11 @@ public class TransactionThreadPool extends SimpleThreadPool implements BeanFacto
      */
     private void openFlagIfNecessary() {
         if (!hasTransaction()) {
-            EntityManagerHolder emHolder = (EntityManagerHolder) TransactionSynchronizationManager.getResource(jpaTransactionManager.getEntityManagerFactory());
+            /*transactionManager.getTransactionSynchronization()
+            EntityManagerHolder emHolder = (EntityManagerHolder) TransactionSynchronizationManager.getResource(transactionManager.getEntityManagerFactory());
             if (emHolder != null) {
                 INHERITABLE_THREAD.set(Boolean.TRUE);
-            }
+            }*/
         }
     }
 }
