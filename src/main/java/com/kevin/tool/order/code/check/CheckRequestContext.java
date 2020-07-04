@@ -1,7 +1,6 @@
 package com.kevin.tool.order.code.check;
 
-import com.kevin.tool.order.OrderState;
-import com.kevin.tool.order.code.generate.OrderCodeFactory;
+import com.kevin.tool.order.code.generate.DefaultCodeFactory;
 import com.kevin.tool.order.code.generate.param.CodeParam;
 
 /**
@@ -9,7 +8,7 @@ import com.kevin.tool.order.code.generate.param.CodeParam;
  * @author lihongmin
  * @date 2020/7/1 13:11
  * @since 1.0.0
- * @see OrderCodeFactory#generateCode(CodeParam, OrderCodeFactory.OrderType)
+ * @see DefaultCodeFactory#generateCode(CodeParam, DefaultCodeFactory.OrderType)
  * @see org.springframework.context.annotation.EnableAspectJAutoProxy
  */
 public class CheckRequestContext {
@@ -49,7 +48,7 @@ public class CheckRequestContext {
         return THREAD_LOCAL.get().codeParam;
     }
 
-    public OrderState getStatus() {
+    public Segment.STATUS getStatus() {
         return THREAD_LOCAL.get().status;
     }
 

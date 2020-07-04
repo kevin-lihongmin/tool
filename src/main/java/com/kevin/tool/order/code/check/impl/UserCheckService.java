@@ -1,4 +1,4 @@
-package com.kevin.tool.order.code.check;
+package com.kevin.tool.order.code.check.impl;
 
 import com.kevin.tool.order.code.check.CheckService;
 import org.springframework.stereotype.Service;

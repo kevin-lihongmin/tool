@@ -1,6 +1,7 @@
-package com.kevin.tool.order.code.check.impl;
+package com.kevin.tool.order.code.generate.config;
 
 import com.kevin.tool.async.SimpleThreadPool;
+import com.kevin.tool.order.code.generate.impl.UserConfigService;
 import com.kevin.tool.order.code.generate.param.CodeParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

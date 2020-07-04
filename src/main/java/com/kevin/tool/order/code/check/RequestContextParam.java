@@ -1,6 +1,5 @@
 package com.kevin.tool.order.code.check;
 
-import com.kevin.tool.order.OrderState;
 import com.kevin.tool.order.code.generate.param.CodeParam;
 
 /**
@@ -14,9 +13,9 @@ public class RequestContextParam {
 
     public final CodeParam codeParam;
 
-    public final OrderState status;
+    public final Segment.STATUS status;
 
-    public RequestContextParam(CodeParam codeParam, OrderState status) {
+    public RequestContextParam(CodeParam codeParam, Segment.STATUS status) {
         this.codeParam = codeParam;
         this.status = status;
     }

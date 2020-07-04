@@ -3,7 +3,12 @@ package com.kevin.tool;
 import com.kevin.tool.async.impl.CreateOrderImpl;
 import com.kevin.tool.order.OrderEvent;
 import com.kevin.tool.order.OrderState;
+import com.kevin.tool.order.code.CodeApplicationContext;
 import com.kevin.tool.timeconsume.EnableTimeConsume;
+import org.apache.ibatis.io.Resources;
+import org.apache.ibatis.session.SqlSession;
+import org.apache.ibatis.session.SqlSessionFactory;
+import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
@@ -20,6 +25,8 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.statemachine.StateMachine;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.io.InputStream;
 
 
 /**
@@ -66,8 +73,14 @@ public class KevinToolApplication implements BeanFactoryAware, CommandLineRunner
         boolean isSuccess2 = stateMachine.sendEvent(OrderEvent.EVENT2);
     }
     
-    public void a() {
-
+    public void mybatis() {
+        //前三步都相同
+        InputStream inputStream = Resources.getResourceAsStream("mybatis-config.xml");
+        SqlSessionFactory factory = new SqlSessionFactoryBuilder().build(inputStream);
+        SqlSession sqlSession = factory.openSession();
+        //这里不再调用SqlSession 的api，而是获得了接口对象，调用接口中的方法。
+        UserMapper mapper = sqlSession.getMapper(UserMapper.class);
+//        List<User> list = mapper.getUserByName("tom");
     }
 
 }
