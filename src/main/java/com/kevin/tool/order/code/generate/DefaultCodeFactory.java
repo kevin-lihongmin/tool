@@ -1,11 +1,17 @@
 package com.kevin.tool.order.code.generate;
 
-import com.kevin.tool.order.code.generate.impl.UserConfigService;
+import com.kevin.tool.order.code.check.CheckRequestContext;
+import com.kevin.tool.order.code.check.CheckService;
+import com.kevin.tool.order.code.check.CodeUtil;
+import com.kevin.tool.order.code.check.RequestContextParam;
+import com.kevin.tool.order.code.generate.impl.PurchaseDefinitionService;
 import com.kevin.tool.order.code.generate.config.PurchaseConfigService;
 import com.kevin.tool.order.code.generate.config.SaleConfigService;
 import com.kevin.tool.order.code.generate.param.CodeParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 /**
  *  订单码工厂
@@ -18,9 +24,9 @@ import org.springframework.stereotype.Component;
 public class DefaultCodeFactory implements CodeFactory {
 
     /**
-     *  初始化的采购订单码值
+     * 是否开启缓存
      */
-    private static final String INIT_CODE = "0000000000000000000000000000000";
+    private static boolean IS_CACHE = true;
 
     @Autowired
     private DefaultCodeFactory defaultCodeFactory;
@@ -34,7 +40,7 @@ public class DefaultCodeFactory implements CodeFactory {
     /**
      * 模拟任务
      */
-    private UserConfigService userConfigService;
+    private PurchaseDefinitionService purchaseDefinitionService;
 
     /**
      *  订单工厂，根据订单类型和参数 -> 生成订单编码
@@ -56,15 +62,15 @@ public class DefaultCodeFactory implements CodeFactory {
     @Override
     public String generateCode(CodeParam codeParam, OrderType orderType) {
         final StringBuilder orderCode;
-        // 添加采购单码
-        if (orderType == OrderType.PURCHASE_ORDER) {
-            orderCode = new StringBuilder(purchaseConfigService.configCode(codeParam));
-        } else {
-            orderCode = new StringBuilder(INIT_CODE);
+        CheckRequestContext.getInstance().set(new RequestContextParam(codeParam, orderType));
+        try {
+            // 添加采购单码
+            orderCode = new StringBuilder(purchaseConfigService.configCode());
+            // 添加销售订单码
+            orderCode.append(saleConfigService.configCode());
+        } finally {
+            CheckRequestContext.getInstance().remove();
         }
-        // 添加销售订单码
-        orderCode.append(saleConfigService.configCode(codeParam));
-
         return orderCode.toString();
     }
 
@@ -85,4 +91,11 @@ public class DefaultCodeFactory implements CodeFactory {
         SALE_ORDER;
     }
 
+    public static boolean isIsCache() {
+        return IS_CACHE;
+    }
+
+    public static void setIsCache(boolean isCache) {
+        IS_CACHE = isCache;
+    }
 }

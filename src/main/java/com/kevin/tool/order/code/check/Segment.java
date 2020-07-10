@@ -10,34 +10,6 @@ import com.kevin.tool.order.code.generate.param.CodeParam;
  */
 public interface Segment {
 
-    enum STATUS {
-        /**
-         *  创建采购单阶段
-         */
-        CREATE_PURCHASE_ORDER(0,1),
-        /**
-         *  创建订单阶段
-         */
-        CREATE_ORDER(5,10);
-
-        STATUS(int start, int end) {
-            this.start = start;
-            this.end = end;
-        }
-
-        private int start;
-
-        private int end;
-
-        public int getStart() {
-            return start;
-        }
-
-        public int getEnd() {
-            return end;
-        }
-    }
-
     /**
      *  分段
      * @return 段编码
@@ -47,9 +19,9 @@ public interface Segment {
     /**
      *  检查每个节点是否验证通过
      * @param codeParam 请求参数
-     * @param status 节点
+     * @param segmentState 节点
      * @return 是否检查通过 不会返回{@code null}
      */
-    Boolean check(CodeParam codeParam, STATUS status);
+    Boolean check(CodeParam codeParam, SegmentState segmentState);
 
 }

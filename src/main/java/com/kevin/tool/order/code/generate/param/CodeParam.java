@@ -25,4 +25,9 @@ public class CodeParam {
      *  订单编码
      */
     private String orderCode;
+
+    /**
+     *  来源系统
+     */
+    private String sourceSystem;
 }

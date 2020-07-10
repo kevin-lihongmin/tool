@@ -1,8 +1,10 @@
 package com.kevin.tool.order.code.generate.config;
 
 import com.kevin.tool.async.SimpleThreadPool;
-import com.kevin.tool.order.code.CodeApplicationContext;
-import com.kevin.tool.order.code.generate.impl.UserConfigService;
+import com.kevin.tool.order.code.check.CheckRequestContext;
+import com.kevin.tool.order.code.check.RequestContextParam;
+import com.kevin.tool.order.code.check.StateConfig;
+import com.kevin.tool.order.code.generate.impl.*;
 import com.kevin.tool.order.code.generate.param.CodeParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,6 +13,7 @@ import java.util.ArrayList;
 import java.util.concurrent.Callable;
 
 import static com.kevin.tool.async.SimpleThreadPool.ThreadPoolEnum.CREATE_ORDER;
+import static com.kevin.tool.order.code.check.StateConfig.*;
 
 /**
  *  销售订单配置服务
@@ -27,25 +30,52 @@ public class SaleConfigService implements SegmentCode {
      */
     private static final int TASK = 5;
 
+    /**
+     *  采购订单结束位置
+     */
+    private static final int PURCHASE_END = 12;
+
+    private final SaleDefinitionService saleDefinitionService;
+    private final SaleOrderCreateService saleOrderCreateService;
+    private final PresellOrderService presellOrderService;
+    private final SaleOrderAuditService saleOrderAuditService;
+    private final ShippingConditionService shippingConditionService;
+
     @Autowired
-    private UserConfigService userConfigService;
+    public SaleConfigService(SaleDefinitionService saleDefinitionService, SaleOrderCreateService saleOrderCreateService,
+                             PresellOrderService presellOrderService, SaleOrderAuditService saleOrderAuditService,
+                             ShippingConditionService shippingConditionService) {
+        this.saleDefinitionService = saleDefinitionService;
+        this.saleOrderCreateService = saleOrderCreateService;
+        this.presellOrderService = presellOrderService;
+        this.saleOrderAuditService = saleOrderAuditService;
+        this.shippingConditionService = shippingConditionService;
+    }
 
     @Override
-    public String configCode(CodeParam codeParam) {
-        final StringBuilder purchase = new StringBuilder();
-        ArrayList<Callable<String>> taskList = new ArrayList<>(TASK);
-        taskList.add(() -> {
-            purchase.replace(0, 1, userConfigService.checkTask());
-            return null;
-        });
-        taskList.add(() -> {
-            purchase.replace(2, 3, userConfigService.checkTask());
-            return null;
-        });
+    public String configCode() {
+        // synchronized
+        final StringBuffer sale = new StringBuffer();
+        ArrayList<Runnable> taskList = new ArrayList<>(TASK);
+        taskList.add(() -> sale.insert(getStart(SALE_DEFINITION), saleDefinitionService.configCode()));
+        taskList.add(() -> sale.insert(getStart(SALE_CREATE), saleOrderCreateService.configCode()));
+        taskList.add(() -> sale.insert(getStart(PRE_SELL_AUDIT), presellOrderService.configCode()));
+        taskList.add(() -> sale.insert(getStart(SALE_AUDIT), saleOrderAuditService.configCode()));
+        taskList.add(() -> sale.insert(getStart(SHIPPING_CONDITION), shippingConditionService.configCode()));
 
-        SimpleThreadPool.executeAll(CREATE_ORDER, taskList);
-//        SimpleThreadPool.executeRunnable(CREATE_ORDER, taskList.toArray(new Runnable[taskList.size()]));
+        // 最后标位，来源系统设置
+        sale.insert(getStart(SOURCE_SYSTEM), CheckRequestContext.getInstance().getCodeParam().getSourceSystem());
 
-        return purchase.toString();
+        SimpleThreadPool.executeRunnable(CREATE_ORDER, taskList.toArray(new Runnable[taskList.size()]));
+        return sale.toString();
     }
+
+    /**
+     *  获取当前的起始位置
+     * @param stateConfig 节点配置枚举
+     */
+    private static Integer getStart(StateConfig stateConfig) {
+        return stateConfig.getStart() - PURCHASE_END;
+    }
+
 }

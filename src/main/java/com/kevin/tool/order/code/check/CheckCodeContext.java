@@ -1,12 +1,11 @@
 package com.kevin.tool.order.code.check;
 
 import com.kevin.tool.order.code.CodeApplicationContext;
-import com.kevin.tool.order.code.CodeUtil;
-import com.kevin.tool.order.code.check.impl.UserCheckService;
 import com.kevin.tool.order.code.generate.param.CodeParam;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
+import org.springframework.beans.factory.BeanNameAware;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.SearchStrategy;
@@ -15,7 +14,9 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
+
+import static com.kevin.tool.order.code.check.StateConfig.AUDIT_ORDER;
+import static com.kevin.tool.order.code.check.StateConfig.SHIPPING_CONDITION;
 
 /**
  *  订单流程每个节点，根据配置和订单码，检查是否通过
@@ -26,16 +27,24 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 @Component
 @ConditionalOnMissingBean(value = {CodeApplicationContext.class}, search = SearchStrategy.CURRENT)
-public class CheckCodeContext extends SegmentContext implements BeanFactoryAware, ApplicationContextAware, InitializingBean {
+public class CheckCodeContext extends SegmentContext implements BooleanService, BeanFactoryAware, BeanNameAware, /*ApplicationContextAware,*/ InitializingBean {
 
-    private static Set<CheckService> set;
+    private static String NAME;
+
+    /**
+     *  所有的服务列表
+     */
+    private static Set<CheckService> checkServiceSet;
 
     /**
      *  配置每个订单节点对应可能需要检查的服务，而服务本身有先后顺序，跳过不检查的服务，本身类似一个责任链
      */
-    private static Map<Segment.STATUS, LinkedHashSet<Class<? extends CheckService>>> CONFIG_CLAZZ_SET;
+    private static Map<SegmentState, Entry> CONFIG_INDEX;
 
-    private static Map<Segment.STATUS, LinkedHashSet<CheckService>> CONFIG_SERVICE_SET;
+    /**
+     *  节点服务（责任）链
+     */
+    private static Map<SegmentState, List<CheckService>> CONFIG_SERVICE;
 
     /**
      * Bean工厂
@@ -44,58 +53,49 @@ public class CheckCodeContext extends SegmentContext implements BeanFactoryAware
 
     private ApplicationContext applicationContext;
 
-    /*static {
-        LinkedHashSet<Class<? extends CheckService>> services = new LinkedHashSet<>();
-        services.add(UserCheckService.class);
-
-        // gc services
-        CLAZZ_SET = services;
-    }*/
-
     @Override
-    public void afterPropertiesSet() throws Exception {
+    public void afterPropertiesSet() {
+        SegmentState[] states = SegmentState.values();
         // 初始化责任链的链条
-        CONFIG_CLAZZ_SET = new HashMap<>(Segment.STATUS.values().length / 4 * 3 + 1);
+        Map<SegmentState, Entry> configIndex = new HashMap<>(states.length / 4 * 3 + 1);
+        Map<SegmentState, List<CheckService>> configService = new HashMap<>(states.length / 4 * 3 + 1);
 
-        LinkedHashSet<Class<? extends CheckService>> services = new LinkedHashSet<>();
-        services.add(UserCheckService.class);
+        for (SegmentState segmentState : states) {
+            StateConfig stateConfig = StateConfig.getStatus(segmentState);
+            configIndex.put(segmentState, new Entry(stateConfig.getStart(), stateConfig.getEnd()));
 
-        // gc services
-        CONFIG_CLAZZ_SET.put(Segment.STATUS.CREATE_ORDER, services);
+            List<CheckService> checkServices = new ArrayList<>();
+            stateConfig.getCheckList().forEach(clazz -> {
+                CheckService bean = beanFactory.getBean(clazz);
+                checkServices.add(bean);
+                checkServiceSet.add(bean);
+            });
+            configService.put(segmentState, checkServices);
+        }
 
-        CONFIG_SERVICE_SET = new ConcurrentHashMap<>();
-
-
-//        applicationContext.getBeanNamesForType();
-        /*TreeSet<CheckService> chain = new TreeSet<>();
-        CLAZZ_SET.forEach(service -> {
-            chain.add(beanFactory.getBean(service));
-        });
-        set = Collections.unmodifiableSet(chain);*/
+        CONFIG_INDEX = Collections.unmodifiableMap(configIndex);
+        CONFIG_SERVICE = Collections.unmodifiableMap(configService);
     }
 
     /**
      *  检查每个节点是否验证通过
      * @param codeParam 请求参数
-     * @param status 节点
+     * @param segmentState 节点
      * @return 是否检查通过 不会返回{@code null}
      */
     @Override
-    public Boolean check(CodeParam codeParam, Segment.STATUS status) {
-        CheckRequestContext.getInstance().set(new RequestContextParam(codeParam, status));
+    public Boolean check(CodeParam codeParam, SegmentState segmentState) {
+        CheckRequestContext.getInstance().set(new RequestContextParam(codeParam, segmentState, CONFIG_INDEX.get(segmentState)));
         try {
             String segmentCode = super.getSegment();
             Boolean[] checks = CodeUtil.checkChain(segmentCode);
             int i = 0;
-            Boolean result = true;
-            LinkedHashSet<Class<? extends CheckService>> classes = CONFIG_CLAZZ_SET.get(status);
-            for (Class<? extends CheckService> clazz : classes) {
-                if (checks[i]) {
-                    Boolean checked = beanFactory.getBean(clazz).isCheck();
-                    if (!checked) {
-                        return false;
-                    }
+            List<CheckService> checkServices = CONFIG_SERVICE.get(segmentState);
+            for (CheckService checkService : checkServices) {
+                if (checks[i] && !checkService.isCheck()) {
+                    return false;
                 }
+                i++;
             }
         } catch (IllegalAccessException e) {
             e.printStackTrace();
@@ -106,12 +106,34 @@ public class CheckCodeContext extends SegmentContext implements BeanFactoryAware
     }
 
     @Override
+    public Boolean isAutoOrder(String code) {
+        String markerCode = code.substring(AUDIT_ORDER.getStart(), AUDIT_ORDER.getEnd());
+        return CodeUtil.isTrue(markerCode);
+    }
+
+    @Override
+    public Boolean isTms(String code) {
+        String markerCode = code.substring(SHIPPING_CONDITION.getStart(), SHIPPING_CONDITION.getEnd());
+        return CodeUtil.isTrue(markerCode);
+    }
+
+    @Override
     public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
         this.beanFactory = beanFactory;
     }
 
     @Override
+    public void setBeanName(String name) {
+        NAME = name;
+    }
+
+    /*@Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         this.applicationContext = applicationContext;
+    }*/
+
+    @Override
+    protected Entry getStateConfig(SegmentState segmentState) {
+        return CONFIG_INDEX.get(segmentState);
     }
 }

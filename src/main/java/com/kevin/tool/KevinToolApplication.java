@@ -9,6 +9,7 @@ import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
+import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
@@ -38,6 +39,7 @@ import java.io.InputStream;
 @EnableTimeConsume
 @EnableAsync
 @ComponentScan("com.kevin.tool")
+@MapperScan
 @EnableTransactionManagement
 @SpringBootApplication
 @EnableAspectJAutoProxy(proxyTargetClass = true, exposeProxy = true)
@@ -73,15 +75,7 @@ public class KevinToolApplication implements BeanFactoryAware, CommandLineRunner
         boolean isSuccess2 = stateMachine.sendEvent(OrderEvent.EVENT2);
     }
     
-    public void mybatis() {
-        //前三步都相同
-        InputStream inputStream = Resources.getResourceAsStream("mybatis-config.xml");
-        SqlSessionFactory factory = new SqlSessionFactoryBuilder().build(inputStream);
-        SqlSession sqlSession = factory.openSession();
-        //这里不再调用SqlSession 的api，而是获得了接口对象，调用接口中的方法。
-        UserMapper mapper = sqlSession.getMapper(UserMapper.class);
-//        List<User> list = mapper.getUserByName("tom");
-    }
+
 
 }
 

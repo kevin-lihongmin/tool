@@ -36,8 +36,14 @@ public class SimpleThreadPool {
      *  线程池集合枚举
      */
     public enum ThreadPoolEnum {
+        /**
+         *  统计订单相关线程池
+         */
         MANAGE("manage", "统计订单相关线程池", 5, 8, 30, TimeUnit.SECONDS,
                 new LinkedBlockingDeque(50), new ThreadPoolExecutor.AbortPolicy()),
+        /**
+         * 创建订单相关线程池
+         */
         CREATE_ORDER("createOrder", "创建订单相关线程池", 5, 20, 60, TimeUnit.SECONDS,
                 new LinkedBlockingDeque(50), new ThreadPoolExecutor.CallerRunsPolicy());
 

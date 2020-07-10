@@ -1,6 +1,8 @@
 package com.kevin.tool.order.code.check;
 
 import com.kevin.tool.order.code.generate.param.CodeParam;
+import static com.kevin.tool.order.code.check.SegmentContext.Entry;
+import static com.kevin.tool.order.code.generate.DefaultCodeFactory.OrderType;
 
 /**
  *  请求参数封装
@@ -13,10 +15,23 @@ public class RequestContextParam {
 
     public final CodeParam codeParam;
 
-    public final Segment.STATUS status;
+    public final SegmentState segmentState;
 
-    public RequestContextParam(CodeParam codeParam, Segment.STATUS status) {
+    public final Entry entry;
+
+    public final OrderType orderType;
+
+    public RequestContextParam(CodeParam codeParam, SegmentState segmentState, Entry entry) {
         this.codeParam = codeParam;
-        this.status = status;
+        this.segmentState = segmentState;
+        this.entry = entry;
+        this.orderType = null;
+    }
+
+    public RequestContextParam(CodeParam codeParam, OrderType orderType) {
+        this.codeParam = codeParam;
+        this.orderType = orderType;
+        this.segmentState = null;
+        this.entry = null;
     }
 }

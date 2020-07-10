@@ -1,4 +1,4 @@
-package com.kevin.tool.order.code.generate.config;
+package com.kevin.tool.order.code.generate.impl;
 
 import com.kevin.tool.order.code.generate.param.CodeParam;
 
@@ -8,7 +8,7 @@ import com.kevin.tool.order.code.generate.param.CodeParam;
  * @date 2020/7/1 10:12
  * @since 1.0.0
  */
-public interface SegmentCode {
+public interface SegmentCodeImpl {
 
     /**
      *  分段订单码

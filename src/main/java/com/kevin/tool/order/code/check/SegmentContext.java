@@ -1,10 +1,6 @@
 package com.kevin.tool.order.code.check;
 
-import com.google.common.collect.Lists;
 import lombok.Data;
-
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  *  分段配置
@@ -14,37 +10,33 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public abstract class SegmentContext implements Segment {
 
-    protected static Set<STATUS> index;
-
-    protected static Map<STATUS, List<CheckService>> MAP_SERVICE;
-
-    static {
-        Set<STATUS> map = new HashSet<>();
-        for (STATUS value : STATUS.values()) {
-            index.add(value);
-        }
-        index = Collections.unmodifiableSet(map);
-
-        MAP_SERVICE = new ConcurrentHashMap<STATUS, LinkedHashSet<CheckService>>();
-        MAP_SERVICE.put(STATUS.CREATE_ORDER, Lists.newArrayList(UserCheckService.class));
-
-        MAP_SERVICE.put(STATUS.CREATE_PURCHASE_ORDER, Lists..newArrayList(UserCheckService.class));
-
-
-    }
-
     /**
      *  段位置信息
      */
     @Data
-    class Entry{
-        private int start;
-        private int end;
+    public static class Entry {
+        public final int start;
+        public final int end;
+
+        public Entry(int start, int end) {
+            this.start = start;
+            this.end = end;
+        }
     }
+
+    /**
+     *  获取订单码对应的位置
+     *
+     * @param segmentState
+     * @return
+     */
+    protected abstract Entry getStateConfig(SegmentState segmentState);
+
 
     @Override
     public String getSegment() {
         RequestContextParam param = CheckRequestContext.getInstance().get();
-        return param.codeParam.getOrderCode().substring(param.status.getStart(), param.status.getEnd());
+        Entry entry = getStateConfig(param.segmentState);
+        return param.codeParam.getOrderCode().substring(entry.start, entry.end);
     }
 }

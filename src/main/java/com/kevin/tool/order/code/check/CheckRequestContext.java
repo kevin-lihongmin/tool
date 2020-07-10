@@ -2,6 +2,8 @@ package com.kevin.tool.order.code.check;
 
 import com.kevin.tool.order.code.generate.DefaultCodeFactory;
 import com.kevin.tool.order.code.generate.param.CodeParam;
+import static com.kevin.tool.order.code.check.SegmentContext.Entry;
+import static com.kevin.tool.order.code.generate.DefaultCodeFactory.OrderType;
 
 /**
  *  检查请求切面
@@ -48,8 +50,16 @@ public class CheckRequestContext {
         return THREAD_LOCAL.get().codeParam;
     }
 
-    public Segment.STATUS getStatus() {
-        return THREAD_LOCAL.get().status;
+    public SegmentState getStatus() {
+        return THREAD_LOCAL.get().segmentState;
+    }
+
+    public Entry getEntry() {
+        return THREAD_LOCAL.get().entry;
+    }
+
+    public OrderType getOrderType() {
+        return THREAD_LOCAL.get().orderType;
     }
 
     public void remove() {
