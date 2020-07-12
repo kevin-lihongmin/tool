@@ -1,7 +1,5 @@
 package com.kevin.tool.order.code.generate.config;
 
-import com.kevin.tool.order.code.generate.param.CodeParam;
-
 /**
  *  订单码服务
  * @author lihongmin

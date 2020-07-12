@@ -1,6 +1,8 @@
 package com.kevin.tool.order.code.check;
 
 import com.kevin.tool.order.code.CodeApplicationContext;
+import com.kevin.tool.order.code.check.marker.DefaultMarkerFlagService;
+import com.kevin.tool.order.code.check.marker.MarkerFlagService;
 import com.kevin.tool.order.code.generate.param.CodeParam;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
@@ -10,13 +12,11 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.SearchStrategy;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
 
-import static com.kevin.tool.order.code.check.StateConfig.AUDIT_ORDER;
-import static com.kevin.tool.order.code.check.StateConfig.SHIPPING_CONDITION;
+import static com.kevin.tool.order.code.check.StateConfig.*;
 
 /**
  *  订单流程每个节点，根据配置和订单码，检查是否通过
@@ -25,11 +25,15 @@ import static com.kevin.tool.order.code.check.StateConfig.SHIPPING_CONDITION;
  * @date 2020/6/30 16:40
  * @since 1.0.0
  */
+@SuppressWarnings("unused")
 @Component
 @ConditionalOnMissingBean(value = {CodeApplicationContext.class}, search = SearchStrategy.CURRENT)
-public class CheckCodeContext extends SegmentContext implements BooleanService, BeanFactoryAware, BeanNameAware, /*ApplicationContextAware,*/ InitializingBean {
+public class CheckCodeContext extends AbstractSegmentContext implements MarkerFlagService, BeanFactoryAware, BeanNameAware, /*ApplicationContextAware,*/ InitializingBean {
 
-    private static String NAME;
+    /**
+     *  当前注册的Bean名称
+     */
+    private static String BEAN_NAME;
 
     /**
      *  所有的服务列表
@@ -52,6 +56,8 @@ public class CheckCodeContext extends SegmentContext implements BooleanService, 
     private BeanFactory beanFactory;
 
     private ApplicationContext applicationContext;
+
+    private static MarkerFlagService markerFlagService = new DefaultMarkerFlagService();
 
     @Override
     public void afterPropertiesSet() {
@@ -107,14 +113,12 @@ public class CheckCodeContext extends SegmentContext implements BooleanService, 
 
     @Override
     public Boolean isAutoOrder(String code) {
-        String markerCode = code.substring(AUDIT_ORDER.getStart(), AUDIT_ORDER.getEnd());
-        return CodeUtil.isTrue(markerCode);
+        return markerFlagService.isAutoOrder(code);
     }
 
     @Override
     public Boolean isTms(String code) {
-        String markerCode = code.substring(SHIPPING_CONDITION.getStart(), SHIPPING_CONDITION.getEnd());
-        return CodeUtil.isTrue(markerCode);
+        return markerFlagService.isTms(code);
     }
 
     @Override
@@ -124,7 +128,7 @@ public class CheckCodeContext extends SegmentContext implements BooleanService, 
 
     @Override
     public void setBeanName(String name) {
-        NAME = name;
+        BEAN_NAME = name;
     }
 
     /*@Override

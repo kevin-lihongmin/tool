@@ -1,11 +1,12 @@
 package com.kevin.tool.order.code.check;
 
-import com.google.common.collect.Lists;
 import com.kevin.tool.order.code.check.impl.*;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static com.google.common.collect.Lists.newArrayList;
 
 /**
  *  订单码配置信息
@@ -15,47 +16,47 @@ import java.util.Map;
  * @date 2020/7/10 13:21
  * @since 1.0.0
  */
-@SuppressWarnings("unused")
+@SuppressWarnings({"unused", "unchecked"})
 public enum StateConfig {
 
     /** 采购订单定义 */
     PURCHASE_DEFINITION(null, 1,2, null),
     /** 创建采购单阶段 */
     PURCHASE_AUDIT(SegmentState.PURCHASE_AUDIT, 3,12,
-            Lists.newArrayList(CreditCheckService.class,
-                    CustomerCheckService.class,
-                    CustomerAccountCheckService.class,
-                    AddresseeCheckService.class,
-                    ProductStatusCheckService.class)),
+            newArrayList(CreditCheckServiceImpl.class,
+                    CustomerCheckServiceImpl.class,
+                    CustomerAccountCheckServiceImpl.class,
+                    AddresseeCheckServiceImpl.class,
+                    ProductStatusCheckServiceImpl.class)),
     /** 销售订单定义 */
     SALE_DEFINITION(null, 13,14, null),
     /** 创建订单阶段 */
     SALE_CREATE(SegmentState.SALE_CREATE,15,36,
-            Lists.newArrayList(CreditCheckService.class,
-                    CustomerCheckService.class,
-                    CustomerAccountCheckService.class,
-                    AddresseeCheckService.class,
-                    ProductStatusCheckService.class)),
+            newArrayList(CreditCheckServiceImpl.class,
+                    CustomerCheckServiceImpl.class,
+                    CustomerAccountCheckServiceImpl.class,
+                    AddresseeCheckServiceImpl.class,
+                    ProductStatusCheckServiceImpl.class)),
     /** 预订单阶段 */
     PRE_SELL_AUDIT(SegmentState.PRE_SELL_AUDIT,37,46,
-            Lists.newArrayList(CreditCheckService.class,
-                    CustomerCheckService.class,
-                    CustomerAccountCheckService.class,
-                    AddresseeCheckService.class,
-                    ProductStatusCheckService.class)),
+            newArrayList(CreditCheckServiceImpl.class,
+                    CustomerCheckServiceImpl.class,
+                    CustomerAccountCheckServiceImpl.class,
+                    AddresseeCheckServiceImpl.class,
+                    ProductStatusCheckServiceImpl.class)),
     /** 销售订单审核阶段 */
     SALE_AUDIT(SegmentState.SALE_AUDIT,47,56,
-            Lists.newArrayList(CreditCheckService.class,
-                    CustomerCheckService.class,
-                    CustomerAccountCheckService.class,
-                    AddresseeCheckService.class,
-                    ProductStatusCheckService.class)),
+            newArrayList(CreditCheckServiceImpl.class,
+                    CustomerCheckServiceImpl.class,
+                    CustomerAccountCheckServiceImpl.class,
+                    AddresseeCheckServiceImpl.class,
+                    ProductStatusCheckServiceImpl.class)),
     /** 运装条件 */
     SHIPPING_CONDITION(SegmentState.SHIPPING_CONDITION,57,58, null),
     /** 来源系统 */
     SOURCE_SYSTEM(null, 59, 60,null),
 
-    /*********************************** 以下为节点的部分 标位配置 ***************************************/
+    //  以下为节点的部分 标位配置
 
     /** 自动开单 */
     AUTO_ORDER(null,27,28, null);

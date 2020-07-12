@@ -8,7 +8,7 @@ import lombok.Data;
  * @date 2020/7/1 10:50
  * @since 1.0.0
  */
-public abstract class SegmentContext implements Segment {
+public abstract class AbstractSegmentContext implements Segment {
 
     /**
      *  段位置信息
@@ -27,8 +27,8 @@ public abstract class SegmentContext implements Segment {
     /**
      *  获取订单码对应的位置
      *
-     * @param segmentState
-     * @return
+     * @param segmentState 对外枚举状态
+     * @return 当前枚举对应标位
      */
     protected abstract Entry getStateConfig(SegmentState segmentState);
 

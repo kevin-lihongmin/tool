@@ -1,7 +1,7 @@
 package com.kevin.tool.order.code.check;
 
 import com.kevin.tool.order.code.generate.param.CodeParam;
-import static com.kevin.tool.order.code.check.SegmentContext.Entry;
+import static com.kevin.tool.order.code.check.AbstractSegmentContext.Entry;
 import static com.kevin.tool.order.code.generate.DefaultCodeFactory.OrderType;
 
 /**

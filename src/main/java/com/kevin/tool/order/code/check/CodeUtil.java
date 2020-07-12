@@ -8,12 +8,18 @@ import org.springframework.context.ApplicationContext;
  * @date 2020/7/1 11:43
  * @since 1.0.0
  */
+@SuppressWarnings("unused")
 public class CodeUtil {
 
     /**
      *  标识{@code true} 订单码标位
      */
     private static final String TRUE_CODE = "01";
+
+    /**
+     *  标位长度
+     */
+    private static final int MARKER_LENGTH = 2;
 
     private static ApplicationContext applicationContext;
 
@@ -34,9 +40,9 @@ public class CodeUtil {
             throw new IllegalAccessException("编码长度异常!");
         }
 
-        Boolean[] result = new Boolean[length / 2];
+        Boolean[] result = new Boolean[length / MARKER_LENGTH];
         String substring;
-        for (int i = 0; i <= length / 2; i++) {
+        for (int i = 0; i <= length / MARKER_LENGTH; i++) {
             substring = code.substring(i * 2, i * 2 + 1);
             result[i] = !TRUE_CODE.equals(substring);
         }

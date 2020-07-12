@@ -28,5 +28,5 @@ public enum SegmentState {
     /**
      *  运装条件
      */
-    SHIPPING_CONDITION;
+    SHIPPING_CONDITION
 }

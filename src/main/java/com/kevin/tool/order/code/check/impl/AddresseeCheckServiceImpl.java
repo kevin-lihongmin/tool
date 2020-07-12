@@ -8,14 +8,14 @@ import org.springframework.stereotype.Service;
 import java.util.Random;
 
 /**
- *  经销商检查
+ *  送达方检查
  *
  * @author lihongmin
  * @date 2020/6/30 16:31
  * @since 1.0.0
  */
 @Service
-public class CustomerCheckService implements CheckService {
+public class AddresseeCheckServiceImpl implements CheckService {
 
     @Override
     public Boolean isCheck() {

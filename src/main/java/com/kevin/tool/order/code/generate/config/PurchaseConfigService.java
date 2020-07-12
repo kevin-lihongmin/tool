@@ -3,9 +3,9 @@ package com.kevin.tool.order.code.generate.config;
 import com.kevin.tool.async.SimpleThreadPool;
 import com.kevin.tool.order.code.check.CheckRequestContext;
 import com.kevin.tool.order.code.generate.DefaultCodeFactory;
-import com.kevin.tool.order.code.generate.impl.CachePurchaseDefinitionService;
+import com.kevin.tool.order.code.generate.impl.CacheSegmentCodeImpl;
+import com.kevin.tool.order.code.generate.impl.PurchaseAuditService;
 import com.kevin.tool.order.code.generate.impl.PurchaseDefinitionService;
-import com.kevin.tool.order.code.generate.param.CodeParam;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -15,7 +15,6 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.concurrent.Callable;
 
 import static com.kevin.tool.async.SimpleThreadPool.ThreadPoolEnum.CREATE_ORDER;
 import static com.kevin.tool.order.code.check.StateConfig.PURCHASE_AUDIT;
@@ -44,8 +43,14 @@ public class PurchaseConfigService implements SegmentCode, InitializingBean, App
 
     private ApplicationContext applicationContext;
 
+    private final PurchaseDefinitionService purchaseDefinitionService;
+    private final PurchaseAuditService purchaseAuditService;
+
     @Autowired
-    private PurchaseDefinitionService purchaseDefinitionService;
+    public PurchaseConfigService(PurchaseDefinitionService purchaseDefinitionService, PurchaseAuditService purchaseAuditService) {
+        this.purchaseDefinitionService = purchaseDefinitionService;
+        this.purchaseAuditService = purchaseAuditService;
+    }
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
@@ -56,9 +61,9 @@ public class PurchaseConfigService implements SegmentCode, InitializingBean, App
     public void afterPropertiesSet() {
         if (DefaultCodeFactory.isIsCache()) {
             BeanFactory beanFactory = applicationContext;
-            CachePurchaseDefinitionService purchaseDefinitionService = beanFactory.getBean(CachePurchaseDefinitionService.class);
-            purchaseDefinitionService.setDelegate(this.purchaseDefinitionService);
-            this.purchaseDefinitionService = purchaseDefinitionService;
+            CacheSegmentCodeImpl cacheSegmentCodeImpl = beanFactory.getBean(CacheSegmentCodeImpl.class);
+            cacheSegmentCodeImpl.setDelegate(this.purchaseDefinitionService);
+//            this.purchaseDefinitionService = cacheSegmentCodeImpl;
         }
     }
 
@@ -69,12 +74,12 @@ public class PurchaseConfigService implements SegmentCode, InitializingBean, App
         ArrayList<Runnable> taskList = new ArrayList<>(TASK);
         taskList.add(() -> purchase.insert(PURCHASE_DEFINITION.getStart(), purchaseDefinitionService.configCode()));
         if (CheckRequestContext.getInstance().getOrderType() == PURCHASE_ORDER) {
-            taskList.add(() -> purchase.insert(PURCHASE_AUDIT.getStart(), purchaseDefinitionService.configCode()));
+            taskList.add(() -> purchase.insert(PURCHASE_AUDIT.getStart(), purchaseAuditService.configCode()));
         } else {
             taskList.add(() -> purchase.insert(PURCHASE_AUDIT.getStart(), INIT_CODE));
         }
 
-        SimpleThreadPool.executeRunnable(CREATE_ORDER, taskList.toArray(new Runnable[taskList.size()]));
+        SimpleThreadPool.executeRunnable(CREATE_ORDER, taskList.toArray(new Runnable[0]));
         return purchase.toString();
     }
 

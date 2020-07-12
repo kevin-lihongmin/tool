@@ -1,17 +1,11 @@
 package com.kevin.tool.order.code.generate;
 
 import com.kevin.tool.order.code.check.CheckRequestContext;
-import com.kevin.tool.order.code.check.CheckService;
-import com.kevin.tool.order.code.check.CodeUtil;
 import com.kevin.tool.order.code.check.RequestContextParam;
-import com.kevin.tool.order.code.generate.impl.PurchaseDefinitionService;
 import com.kevin.tool.order.code.generate.config.PurchaseConfigService;
 import com.kevin.tool.order.code.generate.config.SaleConfigService;
 import com.kevin.tool.order.code.generate.param.CodeParam;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
 
 /**
  *  订单码工厂
@@ -20,7 +14,7 @@ import java.util.List;
  * @since 1.0.0
  */
 @Component
-//@ConditionalOnMissingBean(value = {CodeApplicationContext.class}, search = SearchStrategy.CURRENT)
+@SuppressWarnings("unused")
 public class DefaultCodeFactory implements CodeFactory {
 
     /**
@@ -28,19 +22,16 @@ public class DefaultCodeFactory implements CodeFactory {
      */
     private static boolean IS_CACHE = true;
 
-    @Autowired
-    private DefaultCodeFactory defaultCodeFactory;
+    private final DefaultCodeFactory defaultCodeFactory;
+    private final PurchaseConfigService purchaseConfigService;
+    private final SaleConfigService saleConfigService;
 
-    @Autowired
-    private PurchaseConfigService purchaseConfigService;
-
-    @Autowired
-    private SaleConfigService saleConfigService;
-
-    /**
-     * 模拟任务
-     */
-    private PurchaseDefinitionService purchaseDefinitionService;
+    public DefaultCodeFactory(DefaultCodeFactory defaultCodeFactory,
+                              PurchaseConfigService purchaseConfigService, SaleConfigService saleConfigService) {
+        this.defaultCodeFactory = defaultCodeFactory;
+        this.purchaseConfigService = purchaseConfigService;
+        this.saleConfigService = saleConfigService;
+    }
 
     /**
      *  订单工厂，根据订单类型和参数 -> 生成订单编码
@@ -88,7 +79,7 @@ public class DefaultCodeFactory implements CodeFactory {
         /**
          *  销售订单
          */
-        SALE_ORDER;
+        SALE_ORDER
     }
 
     public static boolean isIsCache() {

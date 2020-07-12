@@ -66,7 +66,7 @@ public class SaleConfigService implements SegmentCode {
         // 最后标位，来源系统设置
         sale.insert(getStart(SOURCE_SYSTEM), CheckRequestContext.getInstance().getCodeParam().getSourceSystem());
 
-        SimpleThreadPool.executeRunnable(CREATE_ORDER, taskList.toArray(new Runnable[taskList.size()]));
+        SimpleThreadPool.executeRunnable(CREATE_ORDER, taskList.toArray(new Runnable[0]));
         return sale.toString();
     }
 

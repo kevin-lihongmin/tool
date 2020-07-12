@@ -1,4 +1,4 @@
-package com.kevin.tool.order.code.check;
+package com.kevin.tool.order.code.check.marker;
 
 /**
  *  标识服务
@@ -7,7 +7,7 @@ package com.kevin.tool.order.code.check;
  * @date 2020/7/10 16:07
  * @since 1.0.0
  */
-public interface BooleanService {
+public interface MarkerFlagService {
 
     /**
      *  是否自动开单

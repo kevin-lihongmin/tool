@@ -2,7 +2,7 @@ package com.kevin.tool.order.code.check;
 
 import com.kevin.tool.order.code.generate.DefaultCodeFactory;
 import com.kevin.tool.order.code.generate.param.CodeParam;
-import static com.kevin.tool.order.code.check.SegmentContext.Entry;
+import static com.kevin.tool.order.code.check.AbstractSegmentContext.Entry;
 import static com.kevin.tool.order.code.generate.DefaultCodeFactory.OrderType;
 
 /**
@@ -13,13 +13,14 @@ import static com.kevin.tool.order.code.generate.DefaultCodeFactory.OrderType;
  * @see DefaultCodeFactory#generateCode(CodeParam, DefaultCodeFactory.OrderType)
  * @see org.springframework.context.annotation.EnableAspectJAutoProxy
  */
+@SuppressWarnings("unused")
 public class CheckRequestContext {
 
     private static class Singleton {
         private static final CheckRequestContext INSTANCE = new CheckRequestContext();
     }
     private CheckRequestContext (){}
-    public static final CheckRequestContext getInstance() {
+    public static CheckRequestContext getInstance() {
         return Singleton.INSTANCE;
     }
 
@@ -36,7 +37,7 @@ public class CheckRequestContext {
 
     /**
      *  设置总请求参数
-     * @param requestContextParam
+     * @param requestContextParam 请求参数封装
      */
     public void set(RequestContextParam requestContextParam) {
         THREAD_LOCAL.set(requestContextParam);

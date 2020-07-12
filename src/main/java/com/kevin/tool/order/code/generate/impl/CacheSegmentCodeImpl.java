@@ -6,15 +6,15 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- *  模拟用户任务
+ *  缓存服务， 包装{@link SegmentCodeImpl}
  * @author lihongmin
  * @date 2020/6/30 16:31
  * @since 1.0.0
  */
 @Service
-public class CachePurchaseDefinitionService extends PurchaseDefinitionService implements SegmentCodeImpl {
+public class CacheSegmentCodeImpl implements SegmentCodeImpl {
 
-    private PurchaseDefinitionService delegate;
+    private SegmentCodeImpl delegate;
 
     private Map<String, String> cache = new ConcurrentHashMap<>();
 

@@ -8,14 +8,14 @@ import org.springframework.stereotype.Service;
 import java.util.Random;
 
 /**
- *  信贷检查
+ *  经销商业务账号检查
  *
  * @author lihongmin
  * @date 2020/6/30 16:31
  * @since 1.0.0
  */
 @Service
-public class CreditCheckService implements CheckService {
+public class CustomerAccountCheckServiceImpl implements CheckService {
 
     @Override
     public Boolean isCheck() {
