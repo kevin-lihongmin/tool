@@ -1,7 +1,7 @@
-package com.kevin.tool.order.code.check;
+package com.kevin.tool.order.code;
 
 /**
- *  对外流程状态
+ *  对外流程状态（节点）
  *
  * @author lihongmin
  * @date 2020/7/10 11:03
@@ -29,4 +29,5 @@ public enum SegmentState {
      *  运装条件
      */
     SHIPPING_CONDITION
+
 }

@@ -1,5 +1,6 @@
 package com.kevin.tool.order.code.check;
 
+import com.kevin.tool.order.code.SegmentState;
 import com.kevin.tool.order.code.generate.DefaultCodeFactory;
 import com.kevin.tool.order.code.generate.param.CodeParam;
 import static com.kevin.tool.order.code.check.AbstractSegmentContext.Entry;

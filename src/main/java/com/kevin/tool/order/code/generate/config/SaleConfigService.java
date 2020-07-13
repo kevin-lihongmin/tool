@@ -54,7 +54,7 @@ public class SaleConfigService implements SegmentCode {
 
     @Override
     public String configCode() {
-        // synchronized
+        // synchronized保证数据回写线程安全
         final StringBuffer sale = new StringBuffer();
         ArrayList<Runnable> taskList = new ArrayList<>(TASK);
         taskList.add(() -> sale.insert(getStart(SALE_DEFINITION), saleDefinitionService.configCode()));

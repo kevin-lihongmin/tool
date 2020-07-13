@@ -1,5 +1,6 @@
 package com.kevin.tool.order.code.check;
 
+import com.kevin.tool.order.code.SegmentState;
 import lombok.Data;
 
 /**

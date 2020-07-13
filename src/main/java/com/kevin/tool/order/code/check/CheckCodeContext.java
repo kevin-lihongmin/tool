@@ -1,6 +1,7 @@
 package com.kevin.tool.order.code.check;
 
 import com.kevin.tool.order.code.CodeApplicationContext;
+import com.kevin.tool.order.code.SegmentState;
 import com.kevin.tool.order.code.check.marker.DefaultMarkerFlagService;
 import com.kevin.tool.order.code.check.marker.MarkerFlagService;
 import com.kevin.tool.order.code.generate.param.CodeParam;
@@ -15,8 +16,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
-
-import static com.kevin.tool.order.code.check.StateConfig.*;
 
 /**
  *  订单流程每个节点，根据配置和订单码，检查是否通过

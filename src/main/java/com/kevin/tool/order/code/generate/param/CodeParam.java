@@ -12,22 +12,23 @@ import lombok.Data;
 public class CodeParam {
 
     /**
-     * 经销商Id
+     * 采购订单类型
      */
-    private String customId;
+    private String poOrderType;
 
     /**
-     * 所在大区
+     * 接单组织
      */
-    private String orgId;
+    private String receiveOrg;
 
     /**
-     *  订单编码
+     *  客户二级分类
      */
-    private String orderCode;
+    private String customer2Classify;
 
     /**
      *  来源系统
      */
     private String sourceSystem;
+
 }

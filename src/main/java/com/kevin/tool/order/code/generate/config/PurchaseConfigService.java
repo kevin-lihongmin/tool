@@ -69,7 +69,7 @@ public class PurchaseConfigService implements SegmentCode, InitializingBean, App
 
     @Override
     public String configCode() {
-        // synchronized
+        // synchronized保证数据回写线程安全
         final StringBuffer purchase = new StringBuffer();
         ArrayList<Runnable> taskList = new ArrayList<>(TASK);
         taskList.add(() -> purchase.insert(PURCHASE_DEFINITION.getStart(), purchaseDefinitionService.configCode()));

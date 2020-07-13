@@ -44,7 +44,7 @@ public class DefaultCodeFactory implements CodeFactory {
     }
 
     /**
-     *  订单工厂，根据订单类型和参数 -> 生成订单编码
+     *  订单码工厂，根据订单类型和参数 -> 生成订单编码
      *
      * @param codeParam 订单参数
      * @param orderType 订单类型
