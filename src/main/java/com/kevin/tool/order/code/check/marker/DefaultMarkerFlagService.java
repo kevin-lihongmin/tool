@@ -1,7 +1,6 @@
 package com.kevin.tool.order.code.check.marker;
 
-import static com.kevin.tool.order.code.check.StateConfig.AUTO_ORDER;
-import static com.kevin.tool.order.code.check.StateConfig.SHIPPING_CONDITION;
+import static com.kevin.tool.order.code.check.StateConfig.*;
 
 /**
  *  默认标位实现
@@ -22,4 +21,18 @@ public class DefaultMarkerFlagService extends AbstractMarkerFlagServiceImpl {
         return super.isFlag(code, SHIPPING_CONDITION);
     }
 
+    @Override
+    public Boolean isPurchaseControl(String code) {
+        return super.isFlag(code, PURCHASE_CONTROL);
+    }
+
+    @Override
+    public Boolean isVsoControl(String code) {
+        return super.isFlag(code, VSO_CONTROL);
+    }
+
+    @Override
+    public Boolean isSingleOrderControl(String code) {
+        return super.isFlag(code, VSO_CONTROL);
+    }
 }

@@ -22,4 +22,25 @@ public interface MarkerFlagService {
      * @return 是否
      */
     Boolean isTms(String code);
+
+    /**
+     *  是否转采购控制
+     * @param code 订单码
+     * @return 是否
+     */
+    Boolean isPurchaseControl(String code);
+
+    /**
+     *  是否转{@code VSO}控制
+     * @param code 订单码
+     * @return 是否
+     */
+    Boolean isVsoControl(String code);
+
+    /**
+     *  整单开单控制
+     * @param code 订单码
+     * @return 是否
+     */
+    Boolean isSingleOrderControl(String code);
 }

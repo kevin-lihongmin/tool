@@ -1,10 +1,9 @@
 package com.kevin.tool.order.code.check;
 
-import com.kevin.tool.order.code.CodeApplicationContext;
+import com.kevin.tool.order.code.CodeApplicationContextImpl;
 import com.kevin.tool.order.code.SegmentState;
-import com.kevin.tool.order.code.check.marker.DefaultMarkerFlagService;
-import com.kevin.tool.order.code.check.marker.MarkerFlagService;
 import com.kevin.tool.order.code.generate.param.CodeParam;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
@@ -24,10 +23,11 @@ import java.util.*;
  * @date 2020/6/30 16:40
  * @since 1.0.0
  */
+@Slf4j
 @SuppressWarnings("unused")
 @Component
-@ConditionalOnMissingBean(value = {CodeApplicationContext.class}, search = SearchStrategy.CURRENT)
-public class CheckCodeContext extends AbstractSegmentContext implements MarkerFlagService, BeanFactoryAware, BeanNameAware, /*ApplicationContextAware,*/ InitializingBean {
+@ConditionalOnMissingBean(value = {CodeApplicationContextImpl.class}, search = SearchStrategy.CURRENT)
+public class CheckCodeContext extends AbstractSegmentContext implements BeanFactoryAware, BeanNameAware, InitializingBean {
 
     /**
      *  当前注册的Bean名称
@@ -55,8 +55,6 @@ public class CheckCodeContext extends AbstractSegmentContext implements MarkerFl
     private BeanFactory beanFactory;
 
     private ApplicationContext applicationContext;
-
-    private static MarkerFlagService markerFlagService = new DefaultMarkerFlagService();
 
     @Override
     public void afterPropertiesSet() {
@@ -104,20 +102,11 @@ public class CheckCodeContext extends AbstractSegmentContext implements MarkerFl
             }
         } catch (IllegalAccessException e) {
             e.printStackTrace();
+            return false;
         } finally {
             CheckRequestContext.getInstance().remove();
         }
         return true;
-    }
-
-    @Override
-    public Boolean isAutoOrder(String code) {
-        return markerFlagService.isAutoOrder(code);
-    }
-
-    @Override
-    public Boolean isTms(String code) {
-        return markerFlagService.isTms(code);
     }
 
     @Override
@@ -128,12 +117,8 @@ public class CheckCodeContext extends AbstractSegmentContext implements MarkerFl
     @Override
     public void setBeanName(String name) {
         BEAN_NAME = name;
+        log.info("getBean " + CheckCodeContext.class.getName() + ", bean name is " + BEAN_NAME);
     }
-
-    /*@Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        this.applicationContext = applicationContext;
-    }*/
 
     @Override
     protected Entry getStateConfig(SegmentState segmentState) {

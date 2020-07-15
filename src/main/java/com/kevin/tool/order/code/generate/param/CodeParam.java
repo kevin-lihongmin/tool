@@ -31,4 +31,9 @@ public class CodeParam {
      */
     private String sourceSystem;
 
+    /**
+     *  订单编码
+     */
+    private String orderCode;
+
 }

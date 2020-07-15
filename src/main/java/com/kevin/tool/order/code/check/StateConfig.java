@@ -52,15 +52,22 @@ public enum StateConfig {
                     CustomerAccountCheckServiceImpl.class,
                     AddresseeCheckServiceImpl.class,
                     ProductStatusCheckServiceImpl.class)),
-    /** 运装条件 */
-    SHIPPING_CONDITION(SegmentState.SHIPPING_CONDITION,57,58, null),
+
     /** 来源系统 */
     SOURCE_SYSTEM(null, 59, 60,null),
 
     //  以下为节点的部分 标位配置
 
+    /** 转采购控制 */
+    PURCHASE_CONTROL(null,25,26, null),
     /** 自动开单 */
-    AUTO_ORDER(null,27,28, null);
+    AUTO_ORDER(null,27,28, null),
+    /** 转VSO控制 */
+    VSO_CONTROL(null,31,32, null),
+    /** 整单开单控制 */
+    SINGLE_ORDER_CONTROL(null,35,36, null),
+    /** 运装条件 */
+    SHIPPING_CONDITION(SegmentState.SHIPPING_CONDITION,57,58, null);
 
     StateConfig(SegmentState segmentState, int start, int end, List<Class<? extends CheckService>> checkList) {
         this.segmentState = segmentState;
