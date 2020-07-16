@@ -2,6 +2,7 @@ package com.kevin.tool.order.code.generate.config;
 
 import com.kevin.tool.async.SimpleThreadPool;
 import com.kevin.tool.order.code.check.CheckRequestContext;
+import com.kevin.tool.order.code.check.RequestContextParam;
 import com.kevin.tool.order.code.generate.DefaultCodeFactory;
 import com.kevin.tool.order.code.generate.impl.CacheSegmentCodeImpl;
 import com.kevin.tool.order.code.generate.impl.PurchaseAuditService;
@@ -72,9 +73,11 @@ public class PurchaseConfigService implements SegmentCode, InitializingBean, App
         // synchronized保证数据回写线程安全
         final StringBuffer purchase = new StringBuffer();
         ArrayList<Runnable> taskList = new ArrayList<>(TASK);
-        taskList.add(() -> purchase.insert(PURCHASE_DEFINITION.getStart(), purchaseDefinitionService.configCode()));
+
+        RequestContextParam param = CheckRequestContext.getInstance().get();
+        taskList.add(() -> purchase.insert(PURCHASE_DEFINITION.getStart(), purchaseDefinitionService.configCode(param)));
         if (CheckRequestContext.getInstance().getOrderType() == PURCHASE_ORDER) {
-            taskList.add(() -> purchase.insert(PURCHASE_AUDIT.getStart(), purchaseAuditService.configCode()));
+            taskList.add(() -> purchase.insert(PURCHASE_AUDIT.getStart(), purchaseAuditService.configCode(param)));
         } else {
             taskList.add(() -> purchase.insert(PURCHASE_AUDIT.getStart(), INIT_CODE));
         }

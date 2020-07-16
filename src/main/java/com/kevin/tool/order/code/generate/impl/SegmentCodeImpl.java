@@ -1,6 +1,6 @@
 package com.kevin.tool.order.code.generate.impl;
 
-import com.kevin.tool.order.code.generate.param.CodeParam;
+import com.kevin.tool.order.code.check.RequestContextParam;
 
 /**
  *  订单码服务
@@ -12,8 +12,9 @@ public interface SegmentCodeImpl {
 
     /**
      *  分段订单码
+     * @param param 上下文参数
      * @return 部分订单码
      */
-    String configCode();
+    String configCode(RequestContextParam param);
 
 }

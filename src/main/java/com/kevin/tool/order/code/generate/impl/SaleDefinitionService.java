@@ -1,5 +1,6 @@
 package com.kevin.tool.order.code.generate.impl;
 
+import com.kevin.tool.order.code.check.RequestContextParam;
 import org.springframework.stereotype.Service;
 
 /**
@@ -15,7 +16,7 @@ import org.springframework.stereotype.Service;
 public class SaleDefinitionService implements SegmentCodeImpl {
 
     @Override
-    public String configCode() {
+    public String configCode(RequestContextParam param) {
         return "01";
     }
 

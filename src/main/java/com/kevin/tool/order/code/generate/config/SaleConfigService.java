@@ -57,11 +57,13 @@ public class SaleConfigService implements SegmentCode {
         // synchronized保证数据回写线程安全
         final StringBuffer sale = new StringBuffer();
         ArrayList<Runnable> taskList = new ArrayList<>(TASK);
-        taskList.add(() -> sale.insert(getStart(SALE_DEFINITION), saleDefinitionService.configCode()));
-        taskList.add(() -> sale.insert(getStart(SALE_CREATE), saleOrderCreateService.configCode()));
-        taskList.add(() -> sale.insert(getStart(PRE_SELL_AUDIT), presellOrderService.configCode()));
-        taskList.add(() -> sale.insert(getStart(SALE_AUDIT), saleOrderAuditService.configCode()));
-        taskList.add(() -> sale.insert(getStart(SHIPPING_CONDITION), shippingConditionService.configCode()));
+
+        final RequestContextParam param = CheckRequestContext.getInstance().get();
+        taskList.add(() -> sale.insert(getStart(SALE_DEFINITION), saleDefinitionService.configCode(param)));
+        taskList.add(() -> sale.insert(getStart(SALE_CREATE), saleOrderCreateService.configCode(param)));
+        taskList.add(() -> sale.insert(getStart(PRE_SELL_AUDIT), presellOrderService.configCode(param)));
+        taskList.add(() -> sale.insert(getStart(SALE_AUDIT), saleOrderAuditService.configCode(param)));
+        taskList.add(() -> sale.insert(getStart(SHIPPING_CONDITION), shippingConditionService.configCode(param)));
 
         // 最后标位，来源系统设置
         sale.insert(getStart(SOURCE_SYSTEM), CheckRequestContext.getInstance().getCodeParam().getSourceSystem());
