@@ -1,5 +1,6 @@
 package com.kevin.tool.order.code.generate.impl;
 
+import com.kevin.tool.order.code.check.RequestContextParam;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
@@ -19,7 +20,7 @@ public class CacheSegmentCodeImpl implements SegmentCodeImpl {
     private Map<String, String> cache = new ConcurrentHashMap<>();
 
     @Override
-    public String configCode() {
+    public String configCode(RequestContextParam param) {
         return "01";
     }
 
