@@ -1,7 +1,11 @@
 package com.kevin.tool.order.code;
 
 import com.kevin.tool.order.code.check.CheckCodeContext;
+import com.kevin.tool.order.code.check.CheckService;
+import com.kevin.tool.order.code.check.PreposingStateConfig;
+import com.kevin.tool.order.code.check.StateConfig;
 import com.kevin.tool.order.code.check.marker.DefaultMarkerFlagService;
+import com.kevin.tool.order.code.check.marker.MarkerCheckService;
 import com.kevin.tool.order.code.check.marker.MarkerFlagService;
 import com.kevin.tool.order.code.generate.CodeFactory;
 import com.kevin.tool.order.code.generate.DefaultCodeFactory;
@@ -10,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.stereotype.Component;
 
+import java.util.*;
+
 import static com.kevin.tool.order.code.generate.DefaultCodeFactory.OrderType;
 
 /**
@@ -17,6 +23,9 @@ import static com.kevin.tool.order.code.generate.DefaultCodeFactory.OrderType;
  *  1、订单码生成
  *  2、不同订单类型（采购订单、销售订单），在某个订单节点（比如：下单节点的验证）的检查验证；是否验证通过
  *  3、返回订单码对应标识值（Boolean类型），是否自动转单、发送Tms等动作交给客户端发起
+ *  4、检查和返回是否检查标识
+ *
+ *  <p> 4、中对应的是在采购和订单服务中生成订单码之前就需要检查的项目，以及返回是否自动审核等标识
  *
  * @author lihongmin
  * @date 2020/7/2 17:32
@@ -30,14 +39,46 @@ import static com.kevin.tool.order.code.generate.DefaultCodeFactory.OrderType;
  * @see #isVsoControl(String) 是否可转{@code VSO}
  * @see #isSingleOrderControl(String) 是否整单开单控制
  * @see #isTms(String) 是否发送Tms标识
+ *
+ * @see #checkAndFlagChase(CodeParam, PreposingState) 采购订单是否检查通过，并且返回是否自动审核等标识
+ * @see #checkAndFlagSale(CodeParam, PreposingState) 销售订单是否检查通过，并且返回是否自动审核等标识
  */
 @Component
 @AutoConfigureBefore(CheckCodeContext.class)
-public class CodeApplicationContextImpl extends CheckCodeContext implements MarkerFlagService, CodeFactory {
+public class CodeApplicationContextImpl extends CheckCodeContext implements MarkerCheckService, CodeFactory {
 
     private final DefaultCodeFactory defaultCodeFactory;
 
     private static final MarkerFlagService markerFlagService = new DefaultMarkerFlagService();
+
+    /**
+     *  节点服务（责任）链
+     */
+    private static Map<PreposingState, List<CheckService>> CONFIG_SERVICE_MAP;
+
+    @Override
+    public void afterPropertiesSet() {
+        super.afterPropertiesSet();
+
+        PreposingState[] states = PreposingState.values();
+        Map<PreposingState, List<CheckService>> configMap = new HashMap<>(2);
+
+        for (PreposingState preposingState : states) {
+            PreposingStateConfig status = PreposingStateConfig.getStatus(preposingState);
+
+            if (!status.getCheckList().isEmpty()) {
+                List<CheckService> checkServices = new ArrayList<>();
+                status.getCheckList().forEach(clazz -> {
+                    CheckService bean = beanFactory.getBean(clazz);
+                    checkServices.add(bean);
+                    checkServiceSet.add(bean);
+                });
+                configMap.put(preposingState, checkServices);
+            }
+        }
+
+        CONFIG_SERVICE_MAP = Collections.unmodifiableMap(configMap);
+    }
 
     @Autowired
     public CodeApplicationContextImpl(DefaultCodeFactory defaultCodeFactory) {
@@ -69,6 +110,24 @@ public class CodeApplicationContextImpl extends CheckCodeContext implements Mark
         return markerFlagService.isPurchaseControl(code);
     }
 
+
+    @Override
+    public Boolean[] checkAndFlagChase(CodeParam codeParam, PreposingState preposingState) {
+        // 查询采购订单配置服务
+        Boolean[] booleans = new Boolean[0];
+        Boolean aBoolean = invokeService(booleans, preposingState);
+        return booleans;
+    }
+
+    @Override
+    public Boolean[] checkAndFlagSale(CodeParam codeParam, PreposingState preposingState) {
+        // 查询销售订单配置服务
+        Boolean[] booleans = new Boolean[0];
+
+        Boolean aBoolean = invokeService(booleans, preposingState);
+        return booleans;
+    }
+
     @Override
     public Boolean isVsoControl(String code) {
         return markerFlagService.isVsoControl(code);
@@ -77,6 +136,24 @@ public class CodeApplicationContextImpl extends CheckCodeContext implements Mark
     @Override
     public Boolean isSingleOrderControl(String code) {
         return markerFlagService.isSingleOrderControl(code);
+    }
+
+    /**
+     *  调用检查服务
+     * @param checkList 是否检查的标识列表
+     * @param preposingState 检查阶段
+     * @return 是否检查通过
+     */
+    private Boolean invokeService(Boolean[] checkList, PreposingState preposingState) {
+        int i = 0;
+        List<CheckService> checkServices = CONFIG_SERVICE_MAP.get(preposingState);
+        for (CheckService checkService : checkServices) {
+            if (checkList[i] && !checkService.isCheck()) {
+                return false;
+            }
+            i++;
+        }
+        return true;
     }
 
 }

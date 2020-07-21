@@ -9,12 +9,14 @@ import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.beans.factory.BeanNameAware;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.SearchStrategy;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  *  订单流程每个节点，根据配置和订单码，检查是否通过
@@ -37,7 +39,7 @@ public class CheckCodeContext extends AbstractSegmentContext implements BeanFact
     /**
      *  所有的服务列表
      */
-    private static Set<CheckService> checkServiceSet;
+    protected static Set<CheckService> checkServiceSet = ConcurrentHashMap.newKeySet();
 
     /**
      *  配置每个订单节点对应可能需要检查的服务，而服务本身有先后顺序，跳过不检查的服务，本身类似一个责任链
@@ -52,7 +54,7 @@ public class CheckCodeContext extends AbstractSegmentContext implements BeanFact
     /**
      * Bean工厂
      */
-    private BeanFactory beanFactory;
+    protected BeanFactory beanFactory;
 
     private ApplicationContext applicationContext;
 
@@ -65,15 +67,19 @@ public class CheckCodeContext extends AbstractSegmentContext implements BeanFact
 
         for (SegmentState segmentState : states) {
             StateConfig stateConfig = StateConfig.getStatus(segmentState);
-            configIndex.put(segmentState, new Entry(stateConfig.getStart(), stateConfig.getEnd()));
+            if (stateConfig.getStart() > 0) {
+                configIndex.put(segmentState, new Entry(stateConfig.getStart(), stateConfig.getEnd()));
+            }
 
-            List<CheckService> checkServices = new ArrayList<>();
-            stateConfig.getCheckList().forEach(clazz -> {
-                CheckService bean = beanFactory.getBean(clazz);
-                checkServices.add(bean);
-                checkServiceSet.add(bean);
-            });
-            configService.put(segmentState, checkServices);
+            if (!stateConfig.getCheckList().isEmpty()) {
+                List<CheckService> checkServices = new ArrayList<>();
+                stateConfig.getCheckList().forEach(clazz -> {
+                    CheckService bean = beanFactory.getBean(clazz);
+                    checkServices.add(bean);
+                    checkServiceSet.add(bean);
+                });
+                configService.put(segmentState, checkServices);
+            }
         }
 
         CONFIG_INDEX = Collections.unmodifiableMap(configIndex);
