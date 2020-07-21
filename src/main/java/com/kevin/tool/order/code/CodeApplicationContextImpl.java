@@ -110,22 +110,22 @@ public class CodeApplicationContextImpl extends CheckCodeContext implements Mark
         return markerFlagService.isPurchaseControl(code);
     }
 
-
     @Override
-    public Boolean[] checkAndFlagChase(CodeParam codeParam, PreposingState preposingState) {
+    public CheckDTO checkAndFlagChase(CodeParam codeParam, PreposingState preposingState) {
         // 查询采购订单配置服务
+        CheckDTO checkDTO = new CheckDTO();
         Boolean[] booleans = new Boolean[0];
         Boolean aBoolean = invokeService(booleans, preposingState);
-        return booleans;
+        return checkDTO;
     }
 
     @Override
-    public Boolean[] checkAndFlagSale(CodeParam codeParam, PreposingState preposingState) {
+    public CheckDTO checkAndFlagSale(CodeParam codeParam, PreposingState preposingState) {
         // 查询销售订单配置服务
         Boolean[] booleans = new Boolean[0];
-
+        CheckDTO checkDTO = new CheckDTO();
         Boolean aBoolean = invokeService(booleans, preposingState);
-        return booleans;
+        return checkDTO;
     }
 
     @Override
