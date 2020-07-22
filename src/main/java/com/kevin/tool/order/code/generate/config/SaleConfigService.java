@@ -28,25 +28,21 @@ public class SaleConfigService implements SegmentCode {
     /**
      * 总任务数
      */
-    private static final int TASK = 5;
+    private static final int TASK = 3;
 
     /**
-     *  采购订单结束位置
+     *  默认销售填充值
+     *  |<-【销售预订单审核】->|<-【销售订单审核】->|
      */
-    private static final int PURCHASE_END = 12;
+    private static final String INIT_CODE = "0000000000000000000000";
 
-    private final SaleDefinitionService saleDefinitionService;
-    private final SaleOrderCreateService saleOrderCreateService;
     private final PresellOrderService presellOrderService;
     private final SaleOrderAuditService saleOrderAuditService;
     private final ShippingConditionService shippingConditionService;
 
     @Autowired
-    public SaleConfigService(SaleDefinitionService saleDefinitionService, SaleOrderCreateService saleOrderCreateService,
-                             PresellOrderService presellOrderService, SaleOrderAuditService saleOrderAuditService,
+    public SaleConfigService(PresellOrderService presellOrderService, SaleOrderAuditService saleOrderAuditService,
                              ShippingConditionService shippingConditionService) {
-        this.saleDefinitionService = saleDefinitionService;
-        this.saleOrderCreateService = saleOrderCreateService;
         this.presellOrderService = presellOrderService;
         this.saleOrderAuditService = saleOrderAuditService;
         this.shippingConditionService = shippingConditionService;
@@ -55,29 +51,18 @@ public class SaleConfigService implements SegmentCode {
     @Override
     public String configCode() {
         // synchronized保证数据回写线程安全
-        final StringBuffer sale = new StringBuffer();
+        final StringBuffer sale = new StringBuffer(INIT_CODE);
         ArrayList<Runnable> taskList = new ArrayList<>(TASK);
 
         final RequestContextParam param = CheckRequestContext.getInstance().get();
-        taskList.add(() -> sale.insert(getStart(SALE_DEFINITION), saleDefinitionService.configCode(param)));
-        taskList.add(() -> sale.insert(getStart(SALE_CREATE), saleOrderCreateService.configCode(param)));
-        taskList.add(() -> sale.insert(getStart(PRE_SELL_AUDIT), presellOrderService.configCode(param)));
-        taskList.add(() -> sale.insert(getStart(SALE_AUDIT), saleOrderAuditService.configCode(param)));
-        taskList.add(() -> sale.insert(getStart(SHIPPING_CONDITION), shippingConditionService.configCode(param)));
-
-        // 最后标位，来源系统设置
-        sale.insert(getStart(SOURCE_SYSTEM), CheckRequestContext.getInstance().getCodeParam().getSourceSystem());
+        taskList.add(() -> sale.replace(PRE_SELL_AUDIT.getStart(), PRE_SELL_AUDIT.getEnd(), presellOrderService.configCode(param)));
+        taskList.add(() -> sale.replace(SALE_AUDIT.getStart(), SALE_AUDIT.getEnd(), saleOrderAuditService.configCode(param)));
+        taskList.add(() -> sale.replace(SHIPPING_CONDITION.getStart(), SHIPPING_CONDITION.getEnd(), shippingConditionService.configCode(param)));
 
         SimpleThreadPool.executeRunnable(CREATE_ORDER, taskList.toArray(new Runnable[0]));
+        // 最后标位，来源系统设置
+        sale.append(CheckRequestContext.getInstance().getCodeParam().getSourceSystem());
         return sale.toString();
-    }
-
-    /**
-     *  获取当前的起始位置
-     * @param stateConfig 节点配置枚举
-     */
-    private static Integer getStart(StateConfig stateConfig) {
-        return stateConfig.getStart() - PURCHASE_END;
     }
 
 }

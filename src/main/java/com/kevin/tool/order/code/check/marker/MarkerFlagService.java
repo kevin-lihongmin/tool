@@ -1,5 +1,7 @@
 package com.kevin.tool.order.code.check.marker;
 
+import com.kevin.tool.order.code.SaleCreateDTO;
+
 /**
  *  标识服务
  *
@@ -17,18 +19,18 @@ public interface MarkerFlagService {
     Boolean isAutoOrder(String code);
 
     /**
-     *  是否发送Tms标识
-     * @param code 订单码
-     * @return 是否
-     */
-    Boolean isTms(String code);
-
-    /**
      *  是否转采购控制
      * @param code 订单码
      * @return 是否
      */
     Boolean isPurchaseControl(String code);
+
+    /**
+     *  是否转{@code SO}控制
+     * @param code 订单码
+     * @return 是否
+     */
+    Boolean isSoControl(String code);
 
     /**
      *  是否转{@code VSO}控制
@@ -43,4 +45,19 @@ public interface MarkerFlagService {
      * @return 是否
      */
     Boolean isSingleOrderControl(String code);
+
+    /**
+     *  是否发送Tms标识
+     * @param code 订单码
+     * @return 是否
+     */
+    Boolean isTms(String code);
+
+    /**
+     *  销售开单开关集合
+     * @param code 订单码
+     * @return 销售开单节点需要用到的开关集合
+     */
+    SaleCreateDTO saleCreateFlag(String code);
+
 }

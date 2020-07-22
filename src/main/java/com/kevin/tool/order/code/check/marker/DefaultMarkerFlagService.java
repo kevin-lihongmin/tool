@@ -1,5 +1,7 @@
 package com.kevin.tool.order.code.check.marker;
 
+import com.kevin.tool.order.code.SaleCreateDTO;
+
 import static com.kevin.tool.order.code.check.StateConfig.*;
 
 /**
@@ -17,13 +19,13 @@ public class DefaultMarkerFlagService extends AbstractMarkerFlagServiceImpl {
     }
 
     @Override
-    public Boolean isTms(String code) {
-        return super.isFlag(code, SHIPPING_CONDITION);
+    public Boolean isPurchaseControl(String code) {
+        return super.isFlag(code, PURCHASE_CONTROL);
     }
 
     @Override
-    public Boolean isPurchaseControl(String code) {
-        return super.isFlag(code, PURCHASE_CONTROL);
+    public Boolean isSoControl(String code) {
+        return  super.isFlag(code, SO_CONTROL);
     }
 
     @Override
@@ -34,5 +36,21 @@ public class DefaultMarkerFlagService extends AbstractMarkerFlagServiceImpl {
     @Override
     public Boolean isSingleOrderControl(String code) {
         return super.isFlag(code, VSO_CONTROL);
+    }
+
+    @Override
+    public Boolean isTms(String code) {
+        return super.isFlag(code, SHIPPING_CONDITION);
+    }
+
+    @Override
+    public SaleCreateDTO saleCreateFlag(String code) {
+        return new SaleCreateDTO(
+                isPurchaseControl(code),
+                isAutoOrder(code),
+                isSoControl(code),
+                isVsoControl(code),
+                isSingleOrderControl(code)
+        );
     }
 }

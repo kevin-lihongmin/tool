@@ -38,7 +38,9 @@ import static com.kevin.tool.order.code.generate.DefaultCodeFactory.OrderType;
  * @see #isAutoOrder(String) 是否自动开单
  * @see #isVsoControl(String) 是否可转{@code VSO}
  * @see #isSingleOrderControl(String) 是否整单开单控制
+ * @see #isSoControl(String) 开单SO控制
  * @see #isTms(String) 是否发送Tms标识
+ * @see #saleCreateFlag(String) 销售开单开关集合
  *
  * @see #checkAndFlagChase(CodeParam, PreposingState) 采购订单是否检查通过，并且返回是否自动审核等标识
  * @see #checkAndFlagSale(CodeParam, PreposingState) 销售订单是否检查通过，并且返回是否自动审核等标识
@@ -136,6 +138,16 @@ public class CodeApplicationContextImpl extends CheckCodeContext implements Mark
     @Override
     public Boolean isSingleOrderControl(String code) {
         return markerFlagService.isSingleOrderControl(code);
+    }
+
+    @Override
+    public Boolean isSoControl(String code) {
+        return markerFlagService.isSoControl(code);
+    }
+
+    @Override
+    public SaleCreateDTO saleCreateFlag(String code) {
+        return markerFlagService.saleCreateFlag(code);
     }
 
     /**

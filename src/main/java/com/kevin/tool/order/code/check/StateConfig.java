@@ -33,22 +33,22 @@ public enum StateConfig {
                     ProductStatusCheckServiceImpl.class)),
     /** 销售订单定义 */
     SALE_DEFINITION(null, 13,14, null),
-    /** 创建订单阶段 */
-    SALE_CREATE(SegmentState.SALE_CREATE,15,36,
+    /** 销售开单【货源安排】阶段 */
+    SALE_CREATE(SegmentState.SALE_CREATE,15,38,
             newArrayList(CreditCheckServiceImpl.class,
                     CustomerCheckServiceImpl.class,
                     CustomerAccountCheckServiceImpl.class,
                     AddresseeCheckServiceImpl.class,
                     ProductStatusCheckServiceImpl.class)),
     /** 预订单阶段 */
-    PRE_SELL_AUDIT(SegmentState.PRE_SELL_AUDIT,37,46,
+    PRE_SELL_AUDIT(SegmentState.PRE_SELL_AUDIT,39,48,
             newArrayList(CreditCheckServiceImpl.class,
                     CustomerCheckServiceImpl.class,
                     CustomerAccountCheckServiceImpl.class,
                     AddresseeCheckServiceImpl.class,
                     ProductStatusCheckServiceImpl.class)),
     /** 销售订单审核阶段 */
-    SALE_AUDIT(SegmentState.SALE_AUDIT,47,56,
+    SALE_AUDIT(SegmentState.SALE_AUDIT,49,58,
             newArrayList(CreditCheckServiceImpl.class,
                     CustomerCheckServiceImpl.class,
                     CustomerAccountCheckServiceImpl.class,
@@ -56,7 +56,7 @@ public enum StateConfig {
                     ProductStatusCheckServiceImpl.class)),
 
     /** 来源系统 */
-    SOURCE_SYSTEM(null, 59, 60,null),
+    SOURCE_SYSTEM(null, 61, 62,null),
 
     //  以下为节点的部分 标位配置
 
@@ -64,12 +64,14 @@ public enum StateConfig {
     PURCHASE_CONTROL(null,25,26, null),
     /** 自动开单 */
     AUTO_ORDER(null,27,28, null),
+    /** 转SO控制 */
+    SO_CONTROL(null,29,30, null),
     /** 转VSO控制 */
-    VSO_CONTROL(null,31,32, null),
+    VSO_CONTROL(null,33,34, null),
     /** 整单开单控制 */
-    SINGLE_ORDER_CONTROL(null,35,36, null),
+    SINGLE_ORDER_CONTROL(null,37,38, null),
     /** 运装条件 */
-    SHIPPING_CONDITION(SegmentState.SHIPPING_CONDITION,57,58, null);
+    SHIPPING_CONDITION(SegmentState.SHIPPING_CONDITION,59,60, null);
 
     StateConfig(SegmentState segmentState, int start, int end, List<Class<? extends CheckService>> checkList) {
         this.segmentState = segmentState;

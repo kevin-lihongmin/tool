@@ -4,9 +4,7 @@ import com.kevin.tool.async.SimpleThreadPool;
 import com.kevin.tool.order.code.check.CheckRequestContext;
 import com.kevin.tool.order.code.check.RequestContextParam;
 import com.kevin.tool.order.code.generate.DefaultCodeFactory;
-import com.kevin.tool.order.code.generate.impl.CacheSegmentCodeImpl;
-import com.kevin.tool.order.code.generate.impl.PurchaseAuditService;
-import com.kevin.tool.order.code.generate.impl.PurchaseDefinitionService;
+import com.kevin.tool.order.code.generate.impl.*;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -18,8 +16,8 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 
 import static com.kevin.tool.async.SimpleThreadPool.ThreadPoolEnum.CREATE_ORDER;
-import static com.kevin.tool.order.code.check.StateConfig.PURCHASE_AUDIT;
-import static com.kevin.tool.order.code.check.StateConfig.PURCHASE_DEFINITION;
+import static com.kevin.tool.order.code.check.StateConfig.*;
+import static com.kevin.tool.order.code.check.StateConfig.SALE_CREATE;
 import static com.kevin.tool.order.code.generate.DefaultCodeFactory.OrderType.PURCHASE_ORDER;
 
 /**
@@ -39,18 +37,24 @@ public class PurchaseConfigService implements SegmentCode, InitializingBean, App
 
     /**
      *  默认审核填充值
+     *  |<-【1-2采购订单定义】->|<-【3-12采购订单审核】->|<-【13-14销售订单定义】->|<-【15-38销售开单配置】->|
      */
-    private static final String INIT_CODE = "0000000000";
+    private static final String INIT_CODE = "00000000000000000000000000000000000000";
 
     private ApplicationContext applicationContext;
 
     private final PurchaseDefinitionService purchaseDefinitionService;
     private final PurchaseAuditService purchaseAuditService;
+    private final SaleDefinitionService saleDefinitionService;
+    private final SaleOrderCreateService saleOrderCreateService;
 
     @Autowired
-    public PurchaseConfigService(PurchaseDefinitionService purchaseDefinitionService, PurchaseAuditService purchaseAuditService) {
+    public PurchaseConfigService(PurchaseDefinitionService purchaseDefinitionService, PurchaseAuditService purchaseAuditService,
+                                 SaleDefinitionService saleDefinitionService, SaleOrderCreateService saleOrderCreateService) {
         this.purchaseDefinitionService = purchaseDefinitionService;
         this.purchaseAuditService = purchaseAuditService;
+        this.saleDefinitionService = saleDefinitionService;
+        this.saleOrderCreateService = saleOrderCreateService;
     }
 
     @Override
@@ -71,18 +75,19 @@ public class PurchaseConfigService implements SegmentCode, InitializingBean, App
     @Override
     public String configCode() {
         // synchronized保证数据回写线程安全
-        final StringBuffer purchase = new StringBuffer();
+        final StringBuffer purchase = new StringBuffer(INIT_CODE);
         ArrayList<Runnable> taskList = new ArrayList<>(TASK);
 
         RequestContextParam param = CheckRequestContext.getInstance().get();
         taskList.add(() -> purchase.insert(PURCHASE_DEFINITION.getStart(), purchaseDefinitionService.configCode(param)));
         if (CheckRequestContext.getInstance().getOrderType() == PURCHASE_ORDER) {
-            taskList.add(() -> purchase.insert(PURCHASE_AUDIT.getStart(), purchaseAuditService.configCode(param)));
-        } else {
-            taskList.add(() -> purchase.insert(PURCHASE_AUDIT.getStart(), INIT_CODE));
+            taskList.add(() -> purchase.replace(PURCHASE_AUDIT.getStart(), PURCHASE_AUDIT.getEnd(), purchaseAuditService.configCode(param)));
+            taskList.add(() -> purchase.replace(SALE_CREATE.getStart(), SALE_CREATE.getEnd(), saleOrderCreateService.configCode(param)));
         }
 
         SimpleThreadPool.executeRunnable(CREATE_ORDER, taskList.toArray(new Runnable[0]));
+        taskList.add(() -> purchase.replace(SALE_DEFINITION.getStart(), SALE_DEFINITION.getStart(), saleDefinitionService.configCode(param)));
+
         return purchase.toString();
     }
 
