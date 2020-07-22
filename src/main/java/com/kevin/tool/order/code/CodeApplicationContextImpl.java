@@ -58,6 +58,11 @@ public class CodeApplicationContextImpl extends CheckCodeContext implements Mark
      */
     private static Map<PreposingState, List<CheckService>> CONFIG_SERVICE_MAP;
 
+    @Autowired
+    public CodeApplicationContextImpl(DefaultCodeFactory defaultCodeFactory) {
+        this.defaultCodeFactory = defaultCodeFactory;
+    }
+
     @Override
     public void afterPropertiesSet() {
         super.afterPropertiesSet();
@@ -80,11 +85,6 @@ public class CodeApplicationContextImpl extends CheckCodeContext implements Mark
         }
 
         CONFIG_SERVICE_MAP = Collections.unmodifiableMap(configMap);
-    }
-
-    @Autowired
-    public CodeApplicationContextImpl(DefaultCodeFactory defaultCodeFactory) {
-        this.defaultCodeFactory = defaultCodeFactory;
     }
 
     @Override

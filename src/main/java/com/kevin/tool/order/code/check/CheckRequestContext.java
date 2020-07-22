@@ -7,12 +7,11 @@ import static com.kevin.tool.order.code.check.AbstractSegmentContext.Entry;
 import static com.kevin.tool.order.code.generate.DefaultCodeFactory.OrderType;
 
 /**
- *  检查请求切面
+ *  检查请求容器
  * @author lihongmin
  * @date 2020/7/1 13:11
  * @since 1.0.0
  * @see DefaultCodeFactory#generateCode(CodeParam, DefaultCodeFactory.OrderType)
- * @see org.springframework.context.annotation.EnableAspectJAutoProxy
  */
 @SuppressWarnings("unused")
 public class CheckRequestContext {

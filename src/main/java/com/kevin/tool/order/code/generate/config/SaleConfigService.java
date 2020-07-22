@@ -3,14 +3,13 @@ package com.kevin.tool.order.code.generate.config;
 import com.kevin.tool.async.SimpleThreadPool;
 import com.kevin.tool.order.code.check.CheckRequestContext;
 import com.kevin.tool.order.code.check.RequestContextParam;
-import com.kevin.tool.order.code.check.StateConfig;
-import com.kevin.tool.order.code.generate.impl.*;
-import com.kevin.tool.order.code.generate.param.CodeParam;
+import com.kevin.tool.order.code.generate.impl.PresellOrderService;
+import com.kevin.tool.order.code.generate.impl.SaleOrderAuditService;
+import com.kevin.tool.order.code.generate.impl.ShippingConditionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.concurrent.Callable;
 
 import static com.kevin.tool.async.SimpleThreadPool.ThreadPoolEnum.CREATE_ORDER;
 import static com.kevin.tool.order.code.check.StateConfig.*;
