@@ -1,11 +1,12 @@
 package com.kevin.tool.order.code.generate;
 
-import com.kevin.tool.order.code.check.CheckRequestContext;
 import com.kevin.tool.order.code.check.RequestContextParam;
 import com.kevin.tool.order.code.generate.config.PurchaseConfigService;
 import com.kevin.tool.order.code.generate.config.SaleConfigService;
 import com.kevin.tool.order.code.generate.param.CodeParam;
 import org.springframework.stereotype.Component;
+
+import static com.kevin.tool.order.code.check.CheckRequestContext.getInstance;
 
 /**
  *  订单码工厂
@@ -20,7 +21,12 @@ public class DefaultCodeFactory implements CodeFactory {
     /**
      * 是否开启缓存
      */
-    private static boolean IS_CACHE = true;
+    private static boolean IS_CACHE = false;
+
+    /**
+     * 当前订单码的总长度
+     */
+    private static final int CURRENT_CODE_SIZE = 62;
 
     private final DefaultCodeFactory defaultCodeFactory;
     private final PurchaseConfigService purchaseConfigService;
@@ -45,41 +51,26 @@ public class DefaultCodeFactory implements CodeFactory {
 
     /**
      *  订单码工厂，根据订单类型和参数 -> 生成订单编码
+     *  <p> 采购订单码和销售订单码先串行，后续有性能问题可以考虑并行
      *
      * @param codeParam 订单参数
      * @param orderType 订单类型
-     * @return 订单编码
+     * @return 订单码
      */
     @Override
     public String generateCode(CodeParam codeParam, OrderType orderType) {
-        final StringBuilder orderCode;
-        CheckRequestContext.getInstance().set(new RequestContextParam(codeParam, orderType));
+        StringBuilder orderCode;
+        getInstance().set(new RequestContextParam(codeParam, orderType));
         try {
-            // 添加采购单码
-            orderCode = new StringBuilder(purchaseConfigService.configCode());
-            // 添加销售订单码
-            orderCode.append(saleConfigService.configCode());
+            orderCode = new StringBuilder(CURRENT_CODE_SIZE)
+                // 添加采购单码
+                .append(purchaseConfigService.configCode())
+                // 添加销售订单码
+                .append(saleConfigService.configCode());
         } finally {
-            CheckRequestContext.getInstance().remove();
+            getInstance().remove();
         }
         return orderCode.toString();
-    }
-
-    /**
-     *  订单类型
-     * @author lihongmin
-     * @date 2020/7/1 9:38
-     * @since 1.0.0
-     */
-    public enum OrderType {
-        /**
-         *  采购订单
-         */
-        PURCHASE_ORDER,
-        /**
-         *  销售订单
-         */
-        SALE_ORDER
     }
 
     public static boolean isIsCache() {

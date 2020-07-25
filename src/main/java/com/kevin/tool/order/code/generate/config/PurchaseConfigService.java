@@ -14,14 +14,21 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static com.kevin.tool.async.SimpleThreadPool.ThreadPoolEnum.CREATE_ORDER;
+import static com.kevin.tool.order.code.check.CheckRequestContext.getOrderType;
 import static com.kevin.tool.order.code.check.StateConfig.*;
-import static com.kevin.tool.order.code.check.StateConfig.SALE_CREATE;
-import static com.kevin.tool.order.code.generate.DefaultCodeFactory.OrderType.PURCHASE_ORDER;
+import static com.kevin.tool.order.code.generate.CodeFactory.OrderType.PURCHASE_ORDER;
 
 /**
  *  采购订单配置服务
+ *
+ *  <p>
+ *      设置默认初始值，后续使用多线程并行获取订单码标位值，{@link StringBuffer#replace(int, int, String)} 使用synchronized关键字保证回写的数据安全
+ *  <p>
+ *      多线程执行获取订单码任务
+ *
  *
  * @author lihongmin
  * @date 2020/7/1 10:07
@@ -76,18 +83,20 @@ public class PurchaseConfigService implements SegmentCode, InitializingBean, App
     public String configCode() {
         // synchronized保证数据回写线程安全
         final StringBuffer purchase = new StringBuffer(INIT_CODE);
-        ArrayList<Runnable> taskList = new ArrayList<>(TASK);
+        List<Runnable> taskList = new ArrayList<>(TASK);
 
-        RequestContextParam param = CheckRequestContext.getInstance().get();
-        taskList.add(() -> purchase.insert(PURCHASE_DEFINITION.getStart(), purchaseDefinitionService.configCode(param)));
-        if (CheckRequestContext.getInstance().getOrderType() == PURCHASE_ORDER) {
+        final RequestContextParam param = CheckRequestContext.getInstance().get();
+        taskList.add(() -> {
+            // 串行执行订单定义，前后有依赖关系
+            purchase.replace(PURCHASE_DEFINITION.getStart(), PURCHASE_DEFINITION.getEnd(), purchaseDefinitionService.configCode(param));
+            purchase.replace(SALE_DEFINITION.getStart(), SALE_DEFINITION.getStart(), saleDefinitionService.configCode(param));
+        });
+        if (getOrderType() == PURCHASE_ORDER) {
             taskList.add(() -> purchase.replace(PURCHASE_AUDIT.getStart(), PURCHASE_AUDIT.getEnd(), purchaseAuditService.configCode(param)));
             taskList.add(() -> purchase.replace(SALE_CREATE.getStart(), SALE_CREATE.getEnd(), saleOrderCreateService.configCode(param)));
         }
 
         SimpleThreadPool.executeRunnable(CREATE_ORDER, taskList.toArray(new Runnable[0]));
-        taskList.add(() -> purchase.replace(SALE_DEFINITION.getStart(), SALE_DEFINITION.getStart(), saleDefinitionService.configCode(param)));
-
         return purchase.toString();
     }
 

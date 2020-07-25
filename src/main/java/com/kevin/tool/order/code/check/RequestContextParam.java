@@ -12,7 +12,7 @@ import static com.kevin.tool.order.code.generate.DefaultCodeFactory.OrderType;
  * @date 2020/7/1 13:25
  * @since 1.0.0
  */
-public class RequestContextParam {
+public final class RequestContextParam {
 
     public final CodeParam codeParam;
 

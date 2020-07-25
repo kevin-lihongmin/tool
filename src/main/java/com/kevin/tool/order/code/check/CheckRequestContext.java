@@ -59,10 +59,18 @@ public class CheckRequestContext {
         return THREAD_LOCAL.get().entry;
     }
 
-    public OrderType getOrderType() {
+    /**
+     *  获取当前订单码获取类型
+     * @return 订单码获取类型
+     */
+    public static OrderType getOrderType() {
         return THREAD_LOCAL.get().orderType;
     }
 
+    /**
+     *  调用{@link ThreadLocal#remove()} 方法，防止内存泄漏和脏数据
+     * @see java.lang.ref.WeakReference
+     */
     public void remove() {
         THREAD_LOCAL.remove();
     }

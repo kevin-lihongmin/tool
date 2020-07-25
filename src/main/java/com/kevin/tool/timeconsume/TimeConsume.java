@@ -9,7 +9,6 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface TimeConsume {
 
-
     /**
      * 任务名称，用于记录时间
      *

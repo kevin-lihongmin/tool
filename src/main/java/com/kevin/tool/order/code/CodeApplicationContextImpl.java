@@ -3,7 +3,6 @@ package com.kevin.tool.order.code;
 import com.kevin.tool.order.code.check.CheckCodeContext;
 import com.kevin.tool.order.code.check.CheckService;
 import com.kevin.tool.order.code.check.PreposingStateConfig;
-import com.kevin.tool.order.code.check.StateConfig;
 import com.kevin.tool.order.code.check.marker.DefaultMarkerFlagService;
 import com.kevin.tool.order.code.check.marker.MarkerCheckService;
 import com.kevin.tool.order.code.check.marker.MarkerFlagService;
@@ -15,17 +14,19 @@ import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
-
-import static com.kevin.tool.order.code.generate.DefaultCodeFactory.OrderType;
+import java.util.concurrent.ConcurrentSkipListMap;
 
 /**
  *  订单码业务处理容器
- *  1、订单码生成
- *  2、不同订单类型（采购订单、销售订单），在某个订单节点（比如：下单节点的验证）的检查验证；是否验证通过
- *  3、返回订单码对应标识值（Boolean类型），是否自动转单、发送Tms等动作交给客户端发起
- *  4、检查和返回是否检查标识
  *
- *  <p> 4、中对应的是在采购和订单服务中生成订单码之前就需要检查的项目，以及返回是否自动审核等标识
+ *  <p>
+ *      1、订单码生成
+ *      2、不同订单类型（采购订单、销售订单），在某个订单节点（比如：下单节点的验证）的检查验证；是否验证通过
+ *      3、返回订单码对应标识值（Boolean类型），是否自动转单、发送Tms等动作交给客户端发起
+ *      4、检查和返回是否检查标识
+ *  </p>
+ *
+ *  <p> 4、中对应的是在采购和订单服务中生成订单码之前就需要检查的项目，返回是否自动审核等标识
  *
  * @author lihongmin
  * @date 2020/7/2 17:32

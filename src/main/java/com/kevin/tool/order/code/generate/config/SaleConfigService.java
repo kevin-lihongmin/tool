@@ -54,6 +54,7 @@ public class SaleConfigService implements SegmentCode {
         ArrayList<Runnable> taskList = new ArrayList<>(TASK);
 
         final RequestContextParam param = CheckRequestContext.getInstance().get();
+
         taskList.add(() -> sale.replace(PRE_SELL_AUDIT.getStart(), PRE_SELL_AUDIT.getEnd(), presellOrderService.configCode(param)));
         taskList.add(() -> sale.replace(SALE_AUDIT.getStart(), SALE_AUDIT.getEnd(), saleOrderAuditService.configCode(param)));
         taskList.add(() -> sale.replace(SHIPPING_CONDITION.getStart(), SHIPPING_CONDITION.getEnd(), shippingConditionService.configCode(param)));
