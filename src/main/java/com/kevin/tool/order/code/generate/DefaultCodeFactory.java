@@ -4,6 +4,7 @@ import com.kevin.tool.order.code.check.RequestContextParam;
 import com.kevin.tool.order.code.generate.config.PurchaseConfigService;
 import com.kevin.tool.order.code.generate.config.SaleConfigService;
 import com.kevin.tool.order.code.generate.param.CodeParam;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import static com.kevin.tool.order.code.check.CheckRequestContext.getInstance;
@@ -14,6 +15,7 @@ import static com.kevin.tool.order.code.check.CheckRequestContext.getInstance;
  * @date 2020/6/30 15:01
  * @since 1.0.0
  */
+@Slf4j
 @Component
 @SuppressWarnings("unused")
 public class DefaultCodeFactory implements CodeFactory {
@@ -21,7 +23,7 @@ public class DefaultCodeFactory implements CodeFactory {
     /**
      * 是否开启缓存
      */
-    private static boolean IS_CACHE = false;
+    private volatile static boolean IS_CACHE = false;
 
     /**
      * 当前订单码的总长度
@@ -63,10 +65,13 @@ public class DefaultCodeFactory implements CodeFactory {
         getInstance().set(new RequestContextParam(codeParam, orderType));
         try {
             orderCode = new StringBuilder(CURRENT_CODE_SIZE)
-                // 添加采购单码
-                .append(purchaseConfigService.configCode())
-                // 添加销售订单码
-                .append(saleConfigService.configCode());
+                    // 添加采购单码
+                    .append(purchaseConfigService.configCode())
+                    // 添加销售订单码
+                    .append(saleConfigService.configCode());
+        } catch (InterruptedException e) {
+            log.error("get order code InterruptedException");
+            return "";
         } finally {
             getInstance().remove();
         }

@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.concurrent.CountDownLatch;
 
 import static com.kevin.tool.async.SimpleThreadPool.ThreadPoolEnum.CREATE_ORDER;
 import static com.kevin.tool.order.code.check.StateConfig.*;
@@ -48,20 +49,30 @@ public class SaleConfigService implements SegmentCode {
     }
 
     @Override
-    public String configCode() {
+    public String configCode() throws InterruptedException {
         // synchronized保证数据回写线程安全
         final StringBuffer sale = new StringBuffer(INIT_CODE);
         ArrayList<Runnable> taskList = new ArrayList<>(TASK);
-
+        final CountDownLatch countDownLatch = new CountDownLatch(TASK);
         final RequestContextParam param = CheckRequestContext.getInstance().get();
 
-        taskList.add(() -> sale.replace(PRE_SELL_AUDIT.getStart(), PRE_SELL_AUDIT.getEnd(), presellOrderService.configCode(param)));
-        taskList.add(() -> sale.replace(SALE_AUDIT.getStart(), SALE_AUDIT.getEnd(), saleOrderAuditService.configCode(param)));
-        taskList.add(() -> sale.replace(SHIPPING_CONDITION.getStart(), SHIPPING_CONDITION.getEnd(), shippingConditionService.configCode(param)));
+        taskList.add(() -> {
+            sale.replace(PRE_SELL_AUDIT.getStart(), PRE_SELL_AUDIT.getEnd(), presellOrderService.configCode(param));
+            countDownLatch.countDown();
+        });
+        taskList.add(() -> {
+            sale.replace(SALE_AUDIT.getStart(), SALE_AUDIT.getEnd(), saleOrderAuditService.configCode(param));
+            countDownLatch.countDown();
+        });
+        taskList.add(() -> {
+            sale.replace(SHIPPING_CONDITION.getStart(), SHIPPING_CONDITION.getEnd(), shippingConditionService.configCode(param));
+            countDownLatch.countDown();
+        });
 
         SimpleThreadPool.executeRunnable(CREATE_ORDER, taskList.toArray(new Runnable[0]));
         // 最后标位，来源系统设置
         sale.append(CheckRequestContext.getInstance().getCodeParam().getSourceSystem());
+        countDownLatch.await();
         return sale.toString();
     }
 

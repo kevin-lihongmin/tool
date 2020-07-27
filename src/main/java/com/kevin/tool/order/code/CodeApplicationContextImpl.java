@@ -116,19 +116,25 @@ public class CodeApplicationContextImpl extends CheckCodeContext implements Mark
     @Override
     public CheckDTO checkAndFlagChase(CodeParam codeParam, PreposingState preposingState) {
         // 查询采购订单配置服务
-        CheckDTO checkDTO = new CheckDTO();
         Boolean[] booleans = new Boolean[0];
+
         Boolean aBoolean = invokeService(booleans, preposingState);
-        return checkDTO;
+        return CheckDTO.builder()
+                .isPassCheck(aBoolean)
+                // 其他检查服务回执
+                .build();
     }
 
     @Override
     public CheckDTO checkAndFlagSale(CodeParam codeParam, PreposingState preposingState) {
         // 查询销售订单配置服务
         Boolean[] booleans = new Boolean[0];
-        CheckDTO checkDTO = new CheckDTO();
         Boolean aBoolean = invokeService(booleans, preposingState);
-        return checkDTO;
+        return CheckDTO
+                .builder()
+                .isPassCheck(aBoolean)
+                // 其他检查服务回执
+                .build();
     }
 
     @Override

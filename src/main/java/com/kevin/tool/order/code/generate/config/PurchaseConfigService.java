@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 
 import static com.kevin.tool.async.SimpleThreadPool.ThreadPoolEnum.CREATE_ORDER;
 import static com.kevin.tool.order.code.check.CheckRequestContext.getOrderType;
@@ -40,7 +41,7 @@ public class PurchaseConfigService implements SegmentCode, InitializingBean, App
     /**
      * 总任务数
      */
-    private static final int TASK = 2;
+    private static final int TASK = 3;
 
     /**
      *  默认审核填充值
@@ -80,23 +81,33 @@ public class PurchaseConfigService implements SegmentCode, InitializingBean, App
     }
 
     @Override
-    public String configCode() {
+    public String configCode() throws InterruptedException {
         // synchronized保证数据回写线程安全
         final StringBuffer purchase = new StringBuffer(INIT_CODE);
         List<Runnable> taskList = new ArrayList<>(TASK);
+        final int countSize = getOrderType() == PURCHASE_ORDER ? 1 : TASK;
+        final CountDownLatch countDownLatch = new CountDownLatch(countSize);
 
         final RequestContextParam param = CheckRequestContext.getInstance().get();
         taskList.add(() -> {
             // 串行执行订单定义，前后有依赖关系
             purchase.replace(PURCHASE_DEFINITION.getStart(), PURCHASE_DEFINITION.getEnd(), purchaseDefinitionService.configCode(param));
             purchase.replace(SALE_DEFINITION.getStart(), SALE_DEFINITION.getStart(), saleDefinitionService.configCode(param));
+            countDownLatch.countDown();
         });
         if (getOrderType() == PURCHASE_ORDER) {
-            taskList.add(() -> purchase.replace(PURCHASE_AUDIT.getStart(), PURCHASE_AUDIT.getEnd(), purchaseAuditService.configCode(param)));
-            taskList.add(() -> purchase.replace(SALE_CREATE.getStart(), SALE_CREATE.getEnd(), saleOrderCreateService.configCode(param)));
+            taskList.add(() -> {
+                purchase.replace(PURCHASE_AUDIT.getStart(), PURCHASE_AUDIT.getEnd(), purchaseAuditService.configCode(param));
+                countDownLatch.countDown();
+            });
+            taskList.add(() -> {
+                purchase.replace(SALE_CREATE.getStart(), SALE_CREATE.getEnd(), saleOrderCreateService.configCode(param));
+                countDownLatch.countDown();
+            });
         }
 
         SimpleThreadPool.executeRunnable(CREATE_ORDER, taskList.toArray(new Runnable[0]));
+        countDownLatch.await();
         return purchase.toString();
     }
 

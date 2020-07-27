@@ -11,7 +11,8 @@ public interface SegmentCode {
     /**
      *  分段订单码
      * @return 部分订单码
+     * @throws InterruptedException 线程终端异常
      */
-    String configCode();
+    String configCode() throws InterruptedException;
 
 }

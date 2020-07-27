@@ -1,5 +1,6 @@
 package com.kevin.tool.order.code;
 
+import lombok.Builder;
 import lombok.Data;
 
 /**
@@ -14,6 +15,7 @@ import lombok.Data;
  * @since 1.0.0
  */
 @Data
+@Builder
 public class CheckDTO {
 
     /**
