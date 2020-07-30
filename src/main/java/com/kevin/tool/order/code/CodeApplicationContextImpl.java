@@ -57,7 +57,9 @@ public class CodeApplicationContextImpl extends CheckCodeContext implements Mark
 
     /**
      *  节点服务（责任）链
+     * @see Collections.UnmodifiableMap
      */
+    @SuppressWarnings("JavadocReference")
     private static Map<PreposingState, List<CheckService>> CONFIG_SERVICE_MAP;
 
     @Autowired

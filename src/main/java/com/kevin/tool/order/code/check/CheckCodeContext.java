@@ -26,7 +26,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @since 1.0.0
  */
 @Slf4j
-@SuppressWarnings("unused")
+@SuppressWarnings({"unused", "JavadocReference"})
 @Component
 @ConditionalOnMissingBean(value = {CodeApplicationContextImpl.class}, search = SearchStrategy.CURRENT)
 public class CheckCodeContext extends AbstractSegmentContext implements BeanFactoryAware, BeanNameAware, InitializingBean {
@@ -43,11 +43,13 @@ public class CheckCodeContext extends AbstractSegmentContext implements BeanFact
 
     /**
      *  配置每个订单节点对应可能需要检查的服务，而服务本身有先后顺序，跳过不检查的服务，本身类似一个责任链
+     * @see Collections.UnmodifiableMap
      */
     private static Map<SegmentState, Entry> CONFIG_INDEX;
 
     /**
      *  节点服务（责任）链
+     * @see Collections.UnmodifiableMap
      */
     private static Map<SegmentState, List<CheckService>> CONFIG_SERVICE;
 
