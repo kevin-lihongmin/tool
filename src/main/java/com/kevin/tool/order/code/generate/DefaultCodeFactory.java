@@ -28,7 +28,7 @@ public class DefaultCodeFactory implements CodeFactory {
     /**
      * 当前订单码的总长度
      */
-    private static final int CURRENT_CODE_SIZE = 62;
+    private static final int CURRENT_CODE_SIZE = 72;
 
     private final DefaultCodeFactory defaultCodeFactory;
     private final PurchaseConfigService purchaseConfigService;

@@ -14,7 +14,6 @@ import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
-import java.util.concurrent.ConcurrentSkipListMap;
 
 /**
  *  订单码业务处理容器
@@ -42,9 +41,11 @@ import java.util.concurrent.ConcurrentSkipListMap;
  * @see #isSoControl(String) 开单SO控制
  * @see #isTms(String) 是否发送Tms标识
  * @see #saleCreateFlag(String) 销售开单开关集合
+ * @see #isSaleShortage(String) [销售开单]是否紧缺
+ * @see #isVso2SoShortage(String) [VSO转SO]是否紧缺
  *
- * @see #checkAndFlagChase(CodeParam, PreposingState) 采购订单是否检查通过，并且返回是否自动审核等标识
- * @see #checkAndFlagSale(CodeParam, PreposingState) 销售订单是否检查通过，并且返回是否自动审核等标识
+ * @see #chaseCheckAndFlag(CodeParam, PreposingState) 采购订单是否检查通过，并且返回是否自动审核等标识
+ * @see #saleCheckAndFlag(CodeParam, PreposingState) 销售订单是否检查通过，并且返回是否自动审核等标识
  */
 @Component
 @AutoConfigureBefore(CheckCodeContext.class)
@@ -114,7 +115,7 @@ public class CodeApplicationContextImpl extends CheckCodeContext implements Mark
     }
 
     @Override
-    public CheckDTO checkAndFlagChase(CodeParam codeParam, PreposingState preposingState) {
+    public CheckDTO chaseCheckAndFlag(CodeParam codeParam, PreposingState preposingState) {
         // 查询采购订单配置服务
         Boolean[] booleans = new Boolean[0];
 
@@ -126,7 +127,7 @@ public class CodeApplicationContextImpl extends CheckCodeContext implements Mark
     }
 
     @Override
-    public CheckDTO checkAndFlagSale(CodeParam codeParam, PreposingState preposingState) {
+    public CheckDTO saleCheckAndFlag(CodeParam codeParam, PreposingState preposingState) {
         // 查询销售订单配置服务
         Boolean[] booleans = new Boolean[0];
         Boolean aBoolean = invokeService(booleans, preposingState);
@@ -155,6 +156,16 @@ public class CodeApplicationContextImpl extends CheckCodeContext implements Mark
     @Override
     public SaleCreateDTO saleCreateFlag(String code) {
         return markerFlagService.saleCreateFlag(code);
+    }
+
+    @Override
+    public Boolean isSaleShortage(String code) {
+        return markerFlagService.isSaleShortage(code);
+    }
+
+    @Override
+    public Boolean isVso2SoShortage(String code) {
+        return markerFlagService.isVso2SoShortage(code);
     }
 
     /**

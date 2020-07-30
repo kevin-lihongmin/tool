@@ -95,6 +95,7 @@ public class PurchaseConfigService implements SegmentCode, InitializingBean, App
             purchase.replace(SALE_DEFINITION.getStart(), SALE_DEFINITION.getStart(), saleDefinitionService.configCode(param));
             countDownLatch.countDown();
         });
+        // 直接开销售订单，则该部分使用初始化标位【00】填充
         if (getOrderType() == PURCHASE_ORDER) {
             taskList.add(() -> {
                 purchase.replace(PURCHASE_AUDIT.getStart(), PURCHASE_AUDIT.getEnd(), purchaseAuditService.configCode(param));

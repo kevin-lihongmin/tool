@@ -60,4 +60,18 @@ public interface MarkerFlagService {
      */
     SaleCreateDTO saleCreateFlag(String code);
 
+    /**
+     *  [销售开单]判断是否检查紧缺
+     * @param code 订单码
+     * @return 是否检查紧缺
+     */
+    Boolean isSaleShortage(String code);
+
+    /**
+     *  [VSO转SO]判断是否检查紧缺
+     * @param code 订单码
+     * @return 是否检查紧缺
+     */
+    Boolean isVso2SoShortage(String code);
+
 }

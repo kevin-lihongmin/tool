@@ -34,21 +34,28 @@ public enum StateConfig {
     /** 销售订单定义 */
     SALE_DEFINITION(null, 13,14, null),
     /** 销售开单【货源安排】阶段 */
-    SALE_CREATE(SegmentState.SALE_CREATE,15,38,
+    SALE_CREATE(SegmentState.SALE_CREATE,15,40,
+            newArrayList(CreditCheckServiceImpl.class,
+                    CustomerCheckServiceImpl.class,
+                    CustomerAccountCheckServiceImpl.class,
+                    AddresseeCheckServiceImpl.class,
+                    ProductStatusCheckServiceImpl.class)),
+    /** VSO转SO阶段 */
+    VSO_TO_SO(SegmentState.VSO_TO_SO,40,50,
             newArrayList(CreditCheckServiceImpl.class,
                     CustomerCheckServiceImpl.class,
                     CustomerAccountCheckServiceImpl.class,
                     AddresseeCheckServiceImpl.class,
                     ProductStatusCheckServiceImpl.class)),
     /** 预订单阶段 */
-    PRE_SELL_AUDIT(SegmentState.PRE_SELL_AUDIT,39,48,
+    PRE_SELL_AUDIT(SegmentState.PRE_SELL_AUDIT,51,60,
             newArrayList(CreditCheckServiceImpl.class,
                     CustomerCheckServiceImpl.class,
                     CustomerAccountCheckServiceImpl.class,
                     AddresseeCheckServiceImpl.class,
                     ProductStatusCheckServiceImpl.class)),
     /** 销售订单审核阶段 */
-    SALE_AUDIT(SegmentState.SALE_AUDIT,49,58,
+    SALE_AUDIT(SegmentState.SALE_AUDIT,60,70,
             newArrayList(CreditCheckServiceImpl.class,
                     CustomerCheckServiceImpl.class,
                     CustomerAccountCheckServiceImpl.class,
@@ -56,7 +63,7 @@ public enum StateConfig {
                     ProductStatusCheckServiceImpl.class)),
 
     /** 来源系统 */
-    SOURCE_SYSTEM(null, 61, 62,null),
+    SOURCE_SYSTEM(null, 71, 72,null),
 
     //  以下为节点的部分 标位配置
 
@@ -68,10 +75,14 @@ public enum StateConfig {
     SO_CONTROL(null,29,30, null),
     /** 转VSO控制 */
     VSO_CONTROL(null,33,34, null),
+    /** 销售开单：是否紧缺检查 */
+    SALE_SHORTAGE(null,37,38, null),
     /** 整单开单控制 */
-    SINGLE_ORDER_CONTROL(null,37,38, null),
+    SINGLE_ORDER_CONTROL(null,39,40, null),
+    /** VSO转SO ：是否紧缺检查 */
+    VSO_TO_SO_SHORTAGE(null,49,50, null),
     /** 运装条件 */
-    SHIPPING_CONDITION(SegmentState.SHIPPING_CONDITION,59,60, null);
+    SHIPPING_CONDITION(SegmentState.SHIPPING_CONDITION,69,70, null);
 
     StateConfig(SegmentState segmentState, int start, int end, List<Class<? extends CheckService>> checkList) {
         this.segmentState = segmentState;

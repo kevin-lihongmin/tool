@@ -1,6 +1,7 @@
 package com.kevin.tool.order.code.check.marker;
 
 import com.kevin.tool.order.code.SaleCreateDTO;
+import com.kevin.tool.order.code.check.StateConfig;
 
 import static com.kevin.tool.order.code.check.StateConfig.*;
 
@@ -53,4 +54,15 @@ public class DefaultMarkerFlagService extends AbstractMarkerFlagServiceImpl {
                 isSingleOrderControl(code)
         );
     }
+
+    @Override
+    public Boolean isSaleShortage(String code) {
+        return super.isFlag(code, SALE_SHORTAGE);
+    }
+
+    @Override
+    public Boolean isVso2SoShortage(String code) {
+        return super.isFlag(code, VSO_TO_SO_SHORTAGE);
+    }
+
 }

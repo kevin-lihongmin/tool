@@ -13,6 +13,11 @@ public enum SegmentState {
      *  审核采购订单
      */
     PURCHASE_AUDIT,
+
+    /**
+     *  VSO转SO
+     */
+    VSO_TO_SO,
     /**
      *  创建销售订单
      */
