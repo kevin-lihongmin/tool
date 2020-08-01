@@ -73,8 +73,12 @@ public enum StateConfig {
     AUTO_ORDER(null,27,28, null),
     /** 转SO控制 */
     SO_CONTROL(null,29,30, null),
+    /** SO 是否检查 Atp */
+    SO_ATP_CONTROL(null,33,34, null),
     /** 转VSO控制 */
     VSO_CONTROL(null,33,34, null),
+    /** VSO：预销售检查 */
+    PRE_SELL_CONTROL(null,35,36, null),
     /** 销售开单：是否紧缺检查 */
     SALE_SHORTAGE(null,37,38, null),
     /** 整单开单控制 */

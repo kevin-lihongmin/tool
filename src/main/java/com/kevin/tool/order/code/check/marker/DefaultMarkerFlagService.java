@@ -35,6 +35,16 @@ public class DefaultMarkerFlagService extends AbstractMarkerFlagServiceImpl {
     }
 
     @Override
+    public Boolean isAtp(String code) {
+        return super.isFlag(code, SO_ATP_CONTROL);
+    }
+
+    @Override
+    public Boolean isCheckPreSell(String code) {
+        return super.isFlag(code, PRE_SELL_CONTROL);
+    }
+
+    @Override
     public Boolean isSingleOrderControl(String code) {
         return super.isFlag(code, VSO_CONTROL);
     }

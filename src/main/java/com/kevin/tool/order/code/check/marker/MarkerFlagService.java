@@ -47,6 +47,20 @@ public interface MarkerFlagService {
     Boolean isSingleOrderControl(String code);
 
     /**
+     *  是否检查预售计划量
+     * @param code 订单码
+     * @return 是否
+     */
+    Boolean isCheckPreSell(String code);
+
+    /**
+     *  so可用量检查（Atp）
+     * @param code 订单码
+     * @return 是否
+     */
+    Boolean isAtp(String code);
+
+    /**
      *  是否发送Tms标识
      * @param code 订单码
      * @return 是否

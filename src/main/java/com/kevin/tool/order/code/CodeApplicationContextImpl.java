@@ -151,6 +151,16 @@ public class CodeApplicationContextImpl extends CheckCodeContext implements Mark
     }
 
     @Override
+    public Boolean isAtp(String code) {
+        return markerFlagService.isAtp(code);
+    }
+
+    @Override
+    public Boolean isCheckPreSell(String code) {
+        return markerFlagService.isCheckPreSell(code);
+    }
+
+    @Override
     public Boolean isSoControl(String code) {
         return markerFlagService.isSoControl(code);
     }

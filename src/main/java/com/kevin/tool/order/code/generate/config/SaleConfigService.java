@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.locks.LockSupport;
 
 import static com.kevin.tool.async.SimpleThreadPool.ThreadPoolEnum.CREATE_ORDER;
 import static com.kevin.tool.order.code.check.CheckRequestContext.getOrderType;
@@ -22,6 +23,7 @@ import static com.kevin.tool.order.code.generate.CodeFactory.OrderType.PURCHASE_
  * @author lihongmin
  * @date 2020/7/1 10:08
  * @since 1.0.0
+ * @see LockSupport#park()
  */
 @Service
 public class SaleConfigService implements SegmentCode {
@@ -72,22 +74,6 @@ public class SaleConfigService implements SegmentCode {
         taskList.add(() -> replaceCode(presellOrderService.configCode(param), PRE_SELL_AUDIT, sale, countDownLatch));
         taskList.add(() -> replaceCode(saleOrderAuditService.configCode(param), SALE_AUDIT, sale, countDownLatch));
         taskList.add(() -> replaceCode(shippingConditionService.configCode(param), SHIPPING_CONDITION, sale, countDownLatch));
-        /*taskList.add(() -> {
-            sale.replace(VSO_TO_SO.getStart(), VSO_TO_SO.getEnd(), vso2SoService.configCode(param));
-            countDownLatch.countDown();
-        });
-        taskList.add(() -> {
-            sale.replace(PRE_SELL_AUDIT.getStart(), PRE_SELL_AUDIT.getEnd(), presellOrderService.configCode(param));
-            countDownLatch.countDown();
-        });
-        taskList.add(() -> {
-            sale.replace(SALE_AUDIT.getStart(), SALE_AUDIT.getEnd(), saleOrderAuditService.configCode(param));
-            countDownLatch.countDown();
-        });
-        taskList.add(() -> {
-            sale.replace(SHIPPING_CONDITION.getStart(), SHIPPING_CONDITION.getEnd(), shippingConditionService.configCode(param));
-            countDownLatch.countDown();
-        });*/
 
         SimpleThreadPool.executeRunnable(CREATE_ORDER, taskList.toArray(new Runnable[0]));
         // 最后标位，来源系统设置

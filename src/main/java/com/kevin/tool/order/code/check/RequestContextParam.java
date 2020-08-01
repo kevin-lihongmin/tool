@@ -2,6 +2,8 @@ package com.kevin.tool.order.code.check;
 
 import com.kevin.tool.order.code.SegmentState;
 import com.kevin.tool.order.code.generate.param.CodeParam;
+import org.springframework.context.event.EventListener;
+
 import static com.kevin.tool.order.code.check.AbstractSegmentContext.Entry;
 import static com.kevin.tool.order.code.generate.DefaultCodeFactory.OrderType;
 
