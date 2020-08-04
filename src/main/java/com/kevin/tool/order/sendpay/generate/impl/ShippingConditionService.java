@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
  * @see com.kevin.tool.order.sendpay.check.StateConfig#SHIPPING_CONDITION
  */
 @Service
-public class ShippingConditionService implements StageCodeImpl {
+public class ShippingConditionService implements StageCode {
 
     @Override
     public String configCode(RequestContextParam param) {

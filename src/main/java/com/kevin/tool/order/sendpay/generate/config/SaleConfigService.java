@@ -35,9 +35,9 @@ public class SaleConfigService implements SegmentCode {
 
     /**
      *  默认销售填充值
-     *  |<-【VSO转SO】->|<-【销售预订单审核】->|<-【销售订单审核】->|
+     *  |<-【VSO转SO】->|<-【销售预订单审核】->|<-【销售订单审核】->|<-【装运条件】->|
      */
-    private static final String INIT_CODE = "0000000000000000000000000000000000";
+    private static final String INIT_CODE = "0000000000" + "0000000000" + "0000000000" + "00";
 
     /**
      *   订单启始标位
@@ -76,9 +76,9 @@ public class SaleConfigService implements SegmentCode {
         taskList.add(() -> replaceCode(shippingConditionService.configCode(param), SHIPPING_CONDITION, sale, countDownLatch));
 
         SimpleThreadPool.executeRunnable(CREATE_ORDER, taskList.toArray(new Runnable[0]));
+        countDownLatch.await();
         // 最后标位，来源系统设置
         sale.append(CheckRequestContext.getInstance().getCodeParam().getSourceSystem());
-        countDownLatch.await();
         return sale.toString();
     }
 

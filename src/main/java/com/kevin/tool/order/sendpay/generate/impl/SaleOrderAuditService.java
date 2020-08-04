@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
  * @see com.kevin.tool.order.sendpay.check.StateConfig#SALE_AUDIT
  */
 @Service
-public class SaleOrderAuditService implements StageCodeImpl {
+public class SaleOrderAuditService implements StageCode {
 
     @Override
     public String configCode(RequestContextParam param) {

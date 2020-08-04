@@ -12,7 +12,7 @@ import lombok.ToString;
  */
 @ToString
 @AllArgsConstructor
-public class SaleCreateDTO {
+public final class SaleCreateDTO {
 
     /**
      *  是否转采购控制

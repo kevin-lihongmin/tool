@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
  * @since 1.0.0
  */
 @Service
-public class PurchaseDefinitionService implements StageCodeImpl {
+public class PurchaseDefinitionService implements StageCode {
 
     @Override
     public String configCode(RequestContextParam param) {

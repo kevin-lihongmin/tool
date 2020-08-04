@@ -8,7 +8,7 @@ import com.kevin.tool.order.sendpay.check.RequestContextParam;
  * @date 2020/7/1 10:12
  * @since 1.0.0
  */
-public interface StageCodeImpl {
+public interface StageCode {
 
     /**
      *  分段订单码

@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
  * @see com.kevin.tool.order.sendpay.check.StateConfig#VSO_TO_SO
  */
 @Service
-public class Vso2SoService implements StageCodeImpl {
+public class Vso2SoService implements StageCode {
 
     @Override
     public String configCode(RequestContextParam param) {

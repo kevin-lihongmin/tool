@@ -7,15 +7,15 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- *  缓存服务， 包装{@link StageCodeImpl}
+ *  缓存服务， 包装{@link StageCode}
  * @author lihongmin
  * @date 2020/6/30 16:31
  * @since 1.0.0
  */
 @Service
-public class CacheStageCodeImpl implements StageCodeImpl {
+public class CacheStageCode implements StageCode {
 
-    private StageCodeImpl delegate;
+    private StageCode delegate;
 
     private Map<String, String> cache = new ConcurrentHashMap<>();
 

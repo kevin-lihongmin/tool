@@ -45,9 +45,9 @@ public class PurchaseConfigService implements SegmentCode, InitializingBean, App
 
     /**
      *  默认审核填充值
-     *  |<-【1-2采购订单定义】->|<-【3-12采购订单审核】->|<-【13-14销售订单定义】->|<-【15-38销售开单配置】->|
+     *  |<-【1-2采购订单定义】->|<-【3-12采购订单审核】->|<-【13-14销售订单定义】->|<-【15-40销售开单配置】->|
      */
-    private static final String INIT_CODE = "00000000000000000000000000000000000000";
+    private static final String INIT_CODE = "00" + "0000000000" + "00" + "00000000000000000000000000";
 
     private ApplicationContext applicationContext;
 
@@ -74,7 +74,7 @@ public class PurchaseConfigService implements SegmentCode, InitializingBean, App
     public void afterPropertiesSet() {
         if (DefaultCodeFactory.isIsCache()) {
             BeanFactory beanFactory = applicationContext;
-            CacheStageCodeImpl cacheSegmentCodeImpl = beanFactory.getBean(CacheStageCodeImpl.class);
+            CacheStageCode cacheSegmentCodeImpl = beanFactory.getBean(CacheStageCode.class);
             cacheSegmentCodeImpl.setDelegate(this.purchaseDefinitionService);
 //            this.purchaseDefinitionService = cacheSegmentCodeImpl;
         }

@@ -14,11 +14,11 @@ import org.springframework.stereotype.Service;
  * @see com.kevin.tool.order.sendpay.check.StateConfig#SALE_CREATE
  */
 @Service
-public class SaleOrderCreateService implements StageCodeImpl {
+public class SaleOrderCreateService implements StageCode {
 
     @Override
     public String configCode(RequestContextParam param) {
-        return "0101020201020102010201";
+        return "010102020102010201020101";
     }
 
 }
