@@ -25,6 +25,8 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collections;
 
 
 /**
@@ -68,6 +70,8 @@ public class KevinToolApplication implements BeanFactoryAware, CommandLineRunner
 
     @Override
     public void run(String... args) {
+
+        Collections.synchronizedList(new ArrayList<String>());
         boolean isSuccess = stateMachine.sendEvent(OrderEvent.EVENT1);
         boolean isSuccess2 = stateMachine.sendEvent(OrderEvent.EVENT2);
     }
