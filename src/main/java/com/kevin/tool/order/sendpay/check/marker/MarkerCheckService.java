@@ -19,7 +19,7 @@ public interface MarkerCheckService extends MarkerFlagService {
      * @param preposingStage 检查阶段
      * @return 检查是否通过 和 Flag是否检查标识
      */
-    CheckDTO chaseCheckAndFlag(CodeParam codeParam, PreposingStage preposingStage);
+    CheckDTO purchaseCheckAndFlag(CodeParam codeParam, PreposingStage preposingStage);
 
     /**
      *  销售订单 检查和返回标识服务

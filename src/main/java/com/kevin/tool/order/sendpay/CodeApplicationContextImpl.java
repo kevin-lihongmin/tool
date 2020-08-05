@@ -44,7 +44,7 @@ import java.util.*;
  * @see #isSaleShortage(String) [销售开单]是否紧缺
  * @see #isVso2SoShortage(String) [VSO转SO]是否紧缺
  *
- * @see #chaseCheckAndFlag(CodeParam, PreposingStage) 采购订单是否检查通过，并且返回是否自动审核等标识
+ * @see #purchaseCheckAndFlag(CodeParam, PreposingStage) 采购订单是否检查通过，并且返回是否自动审核等标识
  * @see #saleCheckAndFlag(CodeParam, PreposingStage) 销售订单是否检查通过，并且返回是否自动审核等标识
  */
 @Component
@@ -117,7 +117,7 @@ public class CodeApplicationContextImpl extends CheckCodeContext implements Mark
     }
 
     @Override
-    public CheckDTO chaseCheckAndFlag(CodeParam codeParam, PreposingStage preposingStage) {
+    public CheckDTO purchaseCheckAndFlag(CodeParam codeParam, PreposingStage preposingStage) {
         // 查询采购订单配置服务
         Boolean[] booleans = new Boolean[0];
 
