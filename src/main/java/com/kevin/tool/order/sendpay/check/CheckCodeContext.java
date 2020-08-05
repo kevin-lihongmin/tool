@@ -72,15 +72,16 @@ public class CheckCodeContext extends AbstractSegmentContext implements BeanFact
                 configIndex.put(stage, new Entry(stateConfig.getStart(), stateConfig.getEnd()));
             }
 
-            if (!stateConfig.getCheckList().isEmpty()) {
-                List<CheckService> checkServices = new ArrayList<>();
-                stateConfig.getCheckList().forEach(clazz -> {
-                    CheckService bean = beanFactory.getBean(clazz);
-                    checkServices.add(bean);
-                    checkServiceSet.add(bean);
-                });
-                configService.put(stage, checkServices);
+            if (stateConfig.getCheckList().isEmpty()) {
+                continue;
             }
+            List<CheckService> checkServices = new ArrayList<>();
+            stateConfig.getCheckList().forEach(clazz -> {
+                CheckService bean = beanFactory.getBean(clazz);
+                checkServices.add(bean);
+                checkServiceSet.add(bean);
+            });
+            configService.put(stage, checkServices);
         }
 
         CONFIG_INDEX = Collections.unmodifiableMap(configIndex);
