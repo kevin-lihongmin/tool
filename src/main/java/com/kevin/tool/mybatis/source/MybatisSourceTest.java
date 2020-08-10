@@ -1,7 +1,7 @@
-package com.kevin.tool.mybatis;
+package com.kevin.tool.mybatis.source;
 
-import com.kevin.tool.mybatis.dao.UserMapper;
-import com.kevin.tool.mybatis.entity.User;
+import com.kevin.tool.mybatis.source.dao.UserMapper;
+import com.kevin.tool.mybatis.source.entity.User;
 import lombok.SneakyThrows;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;

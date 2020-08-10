@@ -1,6 +1,8 @@
 package com.kevin.tool;
 
+import com.github.dreamroute.locker.interceptor.OptimisticLocker;
 import com.kevin.tool.async.impl.CreateOrderImpl;
+import com.kevin.tool.mybatis.plugins.EnableOptimisticLock;
 import com.kevin.tool.order.OrderEvent;
 import com.kevin.tool.order.OrderState;
 import com.kevin.tool.timeconsume.EnableTimeConsume;
@@ -15,6 +17,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
@@ -27,6 +30,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Properties;
 
 
 /**
@@ -44,6 +48,7 @@ import java.util.Collections;
 @EnableAspectJAutoProxy(proxyTargetClass = true, exposeProxy = true)
 @EnableScheduling
 @EnableJpaRepositories
+@EnableOptimisticLock
 public class KevinToolApplication implements BeanFactoryAware, CommandLineRunner {
 
     private BeanFactory beanFactory;
@@ -66,6 +71,16 @@ public class KevinToolApplication implements BeanFactoryAware, CommandLineRunner
         SpringApplication springApplication = new SpringApplication(KevinToolApplication.class);
         springApplication.setWebApplicationType(WebApplicationType.SERVLET);
         springApplication.run(args);
+    }
+
+    @Bean
+    public OptimisticLocker locker() {
+        OptimisticLocker locker = new OptimisticLocker();
+        // 不设置versionColumn，默认为version
+        Properties props = new Properties();
+        props.setProperty("versionColumn", "version");
+        locker.setProperties(props);
+        return locker;
     }
 
     @Override

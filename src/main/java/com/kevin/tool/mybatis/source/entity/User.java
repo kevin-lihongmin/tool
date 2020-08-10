@@ -1,4 +1,4 @@
-package com.kevin.tool.mybatis.entity;
+package com.kevin.tool.mybatis.source.entity;
 
 import java.io.Serializable;
 

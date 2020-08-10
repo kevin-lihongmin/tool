@@ -1,4 +1,4 @@
-package com.kevin.tool.mybatis;
+package com.kevin.tool.mybatis.source;
 
 import lombok.Data;
 

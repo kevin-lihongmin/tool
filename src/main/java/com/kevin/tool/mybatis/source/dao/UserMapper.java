@@ -1,7 +1,7 @@
-package com.kevin.tool.mybatis.dao;
+package com.kevin.tool.mybatis.source.dao;
 
-import com.kevin.tool.mybatis.entity.User;
-import com.kevin.tool.mybatis.entity.UserExample;
+import com.kevin.tool.mybatis.source.entity.User;
+import com.kevin.tool.mybatis.source.entity.UserExample;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
