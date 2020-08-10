@@ -2,6 +2,7 @@ package com.kevin.tool.mybatis.plugins;
 
 import org.springframework.beans.factory.annotation.Autowire;
 import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.boot.autoconfigure.AutoConfigureOrder;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,6 +17,7 @@ import org.springframework.context.annotation.Role;
  * @since 1.0.0
  */
 @Configuration
+@AutoConfigureOrder(value = Integer.MAX_VALUE)
 public class OptimisticLockConfiguration {
 
     /**
