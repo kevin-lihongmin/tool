@@ -17,6 +17,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
@@ -41,14 +42,14 @@ import java.util.Properties;
 @RestController
 @EnableTimeConsume
 @EnableAsync
-@ComponentScan("com.kevin.tool")
+//@ComponentScan("com.kevin.tool")
 @MapperScan
 @EnableTransactionManagement
-@SpringBootApplication
 @EnableAspectJAutoProxy(proxyTargetClass = true, exposeProxy = true)
 @EnableScheduling
 @EnableJpaRepositories
 @EnableOptimisticLock
+@SpringBootApplication(exclude = {DataSourceAutoConfiguration.class, DataSourceAutoConfiguration.class})
 public class KevinToolApplication implements BeanFactoryAware, CommandLineRunner {
 
     private BeanFactory beanFactory;
