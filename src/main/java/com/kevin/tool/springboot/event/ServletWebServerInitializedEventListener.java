@@ -32,10 +32,10 @@ public class ServletWebServerInitializedEventListener {
             Executor[] executors = service.findExecutors();
             log.info("executors size is " + executors.length);
 
-            StandardThreadExecutor executor = (StandardThreadExecutor)executors[0];
+            /*StandardThreadExecutor executor = (StandardThreadExecutor)executors[0];
             executor.getCorePoolSize();
             executor.getLargestPoolSize();
-            executor.getMaxQueueSize();
+            executor.getMaxQueueSize();*/
         }
     }
 }

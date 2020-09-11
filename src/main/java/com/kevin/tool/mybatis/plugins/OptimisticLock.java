@@ -1,7 +1,6 @@
 package com.kevin.tool.mybatis.plugins;
 
 import com.alibaba.fastjson.JSON;
-import com.github.dreamroute.locker.exception.LockerException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.binding.MapperMethod;
 import org.apache.ibatis.executor.Executor;
@@ -27,6 +26,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Objects;
 import java.util.Properties;
+import java.util.regex.Pattern;
 
 
 /**
@@ -51,7 +51,7 @@ import java.util.Properties;
 @Intercepts({
     @Signature(type = Executor.class, method = "update", args = {MappedStatement.class, Object.class}),
     // 两种类型都拦截
-    @Signature(type = ParameterHandler.class, method = "setParameters", args = {PreparedStatement.class, Statement.class}),
+    @Signature(type = ParameterHandler.class, method = "setParameters", args = {PreparedStatement.class}),
     @Signature(type = StatementHandler.class, method = "prepare", args = {Connection.class, Integer.class})
 })
 public class OptimisticLock implements Interceptor {
@@ -59,7 +59,7 @@ public class OptimisticLock implements Interceptor {
     /**
      *  乐观锁对应的数据库字段
      */
-    private final String VERSION_COLUMN = "abc";
+    private final String VERSION_COLUMN = "version";
 
     /** {@link Executor} 拦截的方法 */
     private static final String EXECUTOR_MATHOD = "update";
@@ -86,7 +86,7 @@ public class OptimisticLock implements Interceptor {
                     String sql = boundSql.getSql();
                     String paramJson = JSON.toJSONString(param);
                     if (result == 0) {
-                        throw new LockerException("[触发乐观锁，更新失败], 失败SQL: " + sql + ", 参数: " + paramJson);
+                        throw new RuntimeException("[触发乐观锁，更新失败], 失败SQL: " + sql + ", 参数: " + paramJson);
                     }
 
                     return result;
@@ -168,7 +168,7 @@ public class OptimisticLock implements Interceptor {
             log.error("[[[[[[[[[[[-> [Optimistic Loker] <-]]]]]]]]]]]property type error, the type of version property must be Long or long.");
         }
 
-        pm.setValue(this.VERSION_COLUMN, (Long)value + 1L);
+        pm.setValue(this.VERSION_COLUMN, (Integer)value + 1);
     }
 
     /**
@@ -208,7 +208,7 @@ public class OptimisticLock implements Interceptor {
             if (log.isDebugEnabled()) {
                 log.error("Optimistic Lock plugin plugin init faild.");
             }
-            throw new LockerException("Optimistic Lock plugin init faild.");
+            throw new RuntimeException("Optimistic Lock plugin init faild.");
         } else {
             return target;
         }
@@ -223,9 +223,8 @@ public class OptimisticLock implements Interceptor {
      * @return 是否包含乐观锁字段
      */
     private static boolean resolve(MetaObject mo, String versionColumn) {
-//        String originalSql = (String)mo.getValue("boundSql.sql");
-//        MappedStatement ms = (MappedStatement)mo.getValue("mappedStatement");
-//        return Objects.equals(ms.getSqlCommandType(), SqlCommandType.UPDATE) ? Pattern.matches("[\\s\\S]*?" + versionColumn + "[\\s\\S]*?=[\\s\\S]*?\\?[\\s\\S]*?", originalSql.toLowerCase()) : false;
-        return true;
+        String originalSql = (String)mo.getValue("boundSql.sql");
+        MappedStatement ms = (MappedStatement)mo.getValue("mappedStatement");
+        return Objects.equals(ms.getSqlCommandType(), SqlCommandType.UPDATE) ? Pattern.matches("[\\s\\S]*?" + versionColumn + "[\\s\\S]*?=[\\s\\S]*?\\?[\\s\\S]*?", originalSql.toLowerCase()) : false;
     }
 }

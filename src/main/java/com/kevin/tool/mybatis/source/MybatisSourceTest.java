@@ -1,7 +1,7 @@
 package com.kevin.tool.mybatis.source;
 
-import com.kevin.tool.mybatis.source.dao.UserMapper;
-import com.kevin.tool.mybatis.source.entity.User;
+//import com.kevin.tool.mybatis.source.dao.UserMapper;
+//import com.kevin.tool.mybatis.source.entity.User;
 import lombok.SneakyThrows;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
@@ -28,8 +28,8 @@ public class MybatisSourceTest {
         //
         SqlSession sqlSession = factory.openSession();
         //这里不再调用SqlSession 的api，而是获得了接口对象，调用接口中的方法。
-        UserMapper mapper = sqlSession.getMapper(UserMapper.class);
+        /*UserMapper mapper = sqlSession.getMapper(UserMapper.class);
         //
-        User user = mapper.selectByPrimaryKey(1);
+        User user = mapper.selectByPrimaryKey(1);*/
     }
 }

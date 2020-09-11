@@ -1,37 +1,22 @@
 package com.kevin.tool;
 
-import com.github.dreamroute.locker.interceptor.OptimisticLocker;
 import com.kevin.tool.async.impl.CreateOrderImpl;
 import com.kevin.tool.mybatis.plugins.EnableOptimisticLock;
-import com.kevin.tool.order.OrderEvent;
-import com.kevin.tool.order.OrderState;
 import com.kevin.tool.timeconsume.EnableTimeConsume;
-import com.mysql.cj.jdbc.Driver;
-import com.mysql.cj.jdbc.NonRegisteringDriver;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.statemachine.StateMachine;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Properties;
 
 
 /**
@@ -43,19 +28,19 @@ import java.util.Properties;
 @EnableTimeConsume
 @EnableAsync
 //@ComponentScan("com.kevin.tool")
-@MapperScan
+@MapperScan()
 @EnableTransactionManagement
 @EnableAspectJAutoProxy(proxyTargetClass = true, exposeProxy = true)
 @EnableScheduling
 @EnableJpaRepositories
 @EnableOptimisticLock
-@SpringBootApplication(exclude = {DataSourceAutoConfiguration.class, DataSourceAutoConfiguration.class})
+@SpringBootApplication/*(exclude = {DataSourceAutoConfiguration.class, DataSourceAutoConfiguration.class})*/
 public class KevinToolApplication implements BeanFactoryAware, CommandLineRunner {
 
     private BeanFactory beanFactory;
 
-    @Autowired
-    private StateMachine<OrderState, OrderEvent> stateMachine;
+    /*@Autowired
+    private StateMachine<OrderState, OrderEvent> stateMachine;*/
 
     @Override
     public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
@@ -74,7 +59,7 @@ public class KevinToolApplication implements BeanFactoryAware, CommandLineRunner
         springApplication.run(args);
     }
 
-    @Bean
+    /*@Bean
     public OptimisticLocker locker() {
         OptimisticLocker locker = new OptimisticLocker();
         // 不设置versionColumn，默认为version
@@ -82,14 +67,14 @@ public class KevinToolApplication implements BeanFactoryAware, CommandLineRunner
         props.setProperty("versionColumn", "version");
         locker.setProperties(props);
         return locker;
-    }
+    }*/
 
     @Override
     public void run(String... args) {
 
-        Collections.synchronizedList(new ArrayList<String>());
+       /* Collections.synchronizedList(new ArrayList<String>());
         boolean isSuccess = stateMachine.sendEvent(OrderEvent.EVENT1);
-        boolean isSuccess2 = stateMachine.sendEvent(OrderEvent.EVENT2);
+        boolean isSuccess2 = stateMachine.sendEvent(OrderEvent.EVENT2);*/
     }
 
 

@@ -16,7 +16,7 @@ import org.springframework.context.annotation.Role;
  * @date 2020/8/11 0:06
  * @since 1.0.0
  */
-@Configuration
+//@Configuration
 @AutoConfigureOrder(value = Integer.MAX_VALUE)
 public class OptimisticLockConfiguration {
 

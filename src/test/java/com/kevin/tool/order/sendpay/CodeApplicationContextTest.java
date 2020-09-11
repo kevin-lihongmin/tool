@@ -1,7 +1,6 @@
 package com.kevin.tool.order.sendpay;
 
 import com.kevin.tool.KevinToolApplication;
-import com.kevin.tool.order.sendpay.generate.param.CodeParam;
 import lombok.NoArgsConstructor;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,13 +13,13 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @SpringBootTest(classes = KevinToolApplication.class)
 public class CodeApplicationContextTest {
 
-    @Autowired
+    /*@Autowired
     private CodeApplicationContextImpl context;
 
     @Test
     public void annotationEventTest() {
         String s = context.generateCode(new CodeParam());
         System.out.println(s);
-    }
+    }*/
 
 }

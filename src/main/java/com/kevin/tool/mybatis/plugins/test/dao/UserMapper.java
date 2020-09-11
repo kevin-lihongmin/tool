@@ -1,12 +1,10 @@
-package com.kevin.tool.mybatis.source.dao;
+package com.kevin.tool.mybatis.plugins.test.dao;
 
-import com.kevin.tool.mybatis.source.entity.User;
-import com.kevin.tool.mybatis.source.entity.UserExample;
+import com.kevin.tool.mybatis.plugins.test.entity.User;
+import com.kevin.tool.mybatis.plugins.test.entity.UserExample;
+import java.util.List;
 import org.apache.ibatis.annotations.Param;
 
-import java.util.List;
-
-/*
 public interface UserMapper {
     long countByExample(UserExample example);
 
@@ -29,4 +27,4 @@ public interface UserMapper {
     int updateByPrimaryKeySelective(User record);
 
     int updateByPrimaryKey(User record);
-}*/
+}

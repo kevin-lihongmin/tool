@@ -4,10 +4,20 @@ server:
 spring:
   application:
     name: tool
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: root
+    url: jdbc:mysql://127.0.0.1:3306/kevin?characterEncoding=utf-8&serverTimezone=UTC
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"  # * 在yaml 文件属于关键字，所以需要加引号
 
-
-
+mybatis:
+  mapper-locations: classpath:mappers/*.xml
 
 demo:
   redis:
