@@ -1,8 +1,8 @@
 package com.kevin.tool.mutilthreadtransaction.threadpool;
 
-import com.quanyou.qup.middle.common.threadpool.io.TaskQueue;
-import com.quanyou.qup.middle.common.threadpool.io.TaskThreadFactory;
-import com.quanyou.qup.middle.common.threadpool.io.ThreadPoolExecutorImpl;
+import com.kevin.tool.mutilthreadtransaction.threadpool.io.TaskQueue;
+import com.kevin.tool.mutilthreadtransaction.threadpool.io.TaskThreadFactory;
+import com.kevin.tool.mutilthreadtransaction.threadpool.io.ThreadPoolExecutorImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.EnvironmentAware;
 import org.springframework.core.env.Environment;
