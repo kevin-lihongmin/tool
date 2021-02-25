@@ -8,7 +8,8 @@ import org.springframework.core.io.Resource;
 import org.springframework.web.context.support.XmlWebApplicationContext;
 
 /**
- *  Spring5 {@link BeanFactory}
+ *  Spring5 {@link BeanFactory} 源码研究入库
+ *
  * @author kevin
  * @date 2019/11/6 9:55
  * @since 1.0.0
